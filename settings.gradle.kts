@@ -16,7 +16,7 @@ pluginManagement {
     includeBuild("build-logic")
 }
 
-rootProject.name = "Minestom"
+rootProject.name = "wagasa"
 include("code-generators")
 include("jmh-benchmarks")
 include("jcstress-tests")

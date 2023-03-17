@@ -1,8 +1,11 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `java-library`
     id("minestom.publishing-conventions")
     id("minestom.native-conventions")
     alias(libs.plugins.blossom)
+    alias(libs.plugins.kotlin)
 }
 
 allprojects {
@@ -55,6 +58,14 @@ tasks {
         replaceToken("\"&ARTIFACT\"", if (artifact == null) "null" else "\"${artifact}\"", git)
     }
 
+    // Wagasa start
+    withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+            freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
+        }
+    }
+    // Wagasa end
 }
 
 dependencies {
