@@ -8,7 +8,7 @@ kotlin = "1.8.10"
 kotlinx-datetime = "0.4.0"
 hydrazine = "1.7.2"
 dependencyGetter = "v1.0.1"
-minestomData = "1c1921cd41"
+minestomData = "53e0da5be1"
 hephaistos = "2.5.3"
 jetbrainsAnnotations = "23.0.0"
 
