@@ -165,7 +165,7 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
     protected EntityType entityType; // UNSAFE to change, modify at your own risk
 
     // Network synchronization, send the absolute position of the entity each X milliseconds
-    private static final Duration SYNCHRONIZATION_COOLDOWN = Duration.of(1, TimeUnit.MINUTE);
+    private static final Duration SYNCHRONIZATION_COOLDOWN = Duration.of(3, TimeUnit.SECOND); // Wagasa 5m -> 3s エンティティの同期がイカれる時がある
     private Duration customSynchronizationCooldown;
     private long lastAbsoluteSynchronizationTime;
 
@@ -700,6 +700,11 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
         final List<TimedPotion> effects = this.effects;
         if (effects.isEmpty()) return;
         effects.removeIf(timedPotion -> {
+            // Wagasa start 1.19.4 効果時間無限(-1)に対応する
+            if (timedPotion.getPotion().duration() == -1) {
+                return false;
+            }
+            // Rainboots end
             final long potionTime = (long) timedPotion.getPotion().duration() * MinecraftServer.TICK_MS;
             // Remove if the potion should be expired
             if (time >= timedPotion.getStartingTime() + potionTime) {

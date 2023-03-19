@@ -1,5 +1,6 @@
 package net.minestom.server.entity.damage;
 
+import dev.uten2c.wagasa.damage.DamageEffects;
 import net.minestom.server.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +12,7 @@ public class EntityDamage extends DamageType {
     private final Entity source;
 
     public EntityDamage(@NotNull Entity source) {
-        super("entity_source");
+        super("entity_source", DamageEffects.HURT); // Wagasa DamageEffectsを追加
         this.source = source;
     }
 

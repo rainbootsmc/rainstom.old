@@ -11,6 +11,8 @@ public final class ServerPacketIdentifier {
     public static final int LOGIN_SET_COMPRESSION = 0x03;
     public static final int LOGIN_PLUGIN_REQUEST = 0x04;
 
+    // Wagasa 変更箇所が広範囲なので省略
+    public static final int BUNDLE_DELIMITER = nextPlayId();
     public static final int SPAWN_ENTITY = nextPlayId();
     public static final int SPAWN_EXPERIENCE_ORB = nextPlayId();
     public static final int SPAWN_PLAYER = nextPlayId();
@@ -23,6 +25,7 @@ public final class ServerPacketIdentifier {
     public static final int BLOCK_CHANGE = nextPlayId();
     public static final int BOSS_BAR = nextPlayId();
     public static final int SERVER_DIFFICULTY = nextPlayId();
+    public static final int CHUNKS_BIOMES = nextPlayId();
     public static final int CLEAR_TITLES = nextPlayId();
     public static final int TAB_COMPLETE = nextPlayId();
     public static final int DECLARE_COMMANDS = nextPlayId();
@@ -33,6 +36,7 @@ public final class ServerPacketIdentifier {
     public static final int SET_COOLDOWN = nextPlayId();
     public static final int CUSTOM_CHAT_COMPLETIONS = nextPlayId();
     public static final int PLUGIN_MESSAGE = nextPlayId();
+    public static final int DAMAGE_EVENT = nextPlayId();
     public static final int DELETE_CHAT_MESSAGE = nextPlayId();
     public static final int DISCONNECT = nextPlayId();
     public static final int DISGUISED_CHAT = nextPlayId();
@@ -41,6 +45,7 @@ public final class ServerPacketIdentifier {
     public static final int UNLOAD_CHUNK = nextPlayId();
     public static final int CHANGE_GAME_STATE = nextPlayId();
     public static final int OPEN_HORSE_WINDOW = nextPlayId();
+    public static final int HURT_ANIMATION = nextPlayId();
     public static final int INITIALIZE_WORLD_BORDER = nextPlayId();
     public static final int KEEP_ALIVE = nextPlayId();
     public static final int CHUNK_DATA = nextPlayId();

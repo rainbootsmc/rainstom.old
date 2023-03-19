@@ -6,6 +6,7 @@ plugins {
     id("minestom.native-conventions")
     alias(libs.plugins.blossom)
     alias(libs.plugins.kotlin)
+    alias(libs.plugins.atomicfu)
 }
 
 allprojects {
@@ -62,7 +63,9 @@ tasks {
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "17"
-            freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
+            freeCompilerArgs = freeCompilerArgs +
+                    "-opt-in=kotlin.contracts.ExperimentalContracts" +
+                    "-Xjvm-default=all"
         }
     }
     // Wagasa end

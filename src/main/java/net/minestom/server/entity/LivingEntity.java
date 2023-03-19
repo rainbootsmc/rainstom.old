@@ -1,6 +1,10 @@
 package net.minestom.server.entity;
 
+import dev.uten2c.wagasa.VariablesKt;
+import dev.uten2c.wagasa.damage.VanillaDamageType;
+import dev.uten2c.wagasa.network.packet.server.play.DamageEventPacket;
 import net.kyori.adventure.sound.Sound.Source;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.attribute.AttributeInstance;
 import net.minestom.server.collision.BoundingBox;
@@ -26,6 +30,7 @@ import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.scoreboard.Team;
 import net.minestom.server.sound.SoundEvent;
+import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.block.BlockIterator;
 import net.minestom.server.utils.time.Cooldown;
 import net.minestom.server.utils.time.TimeUnit;
@@ -34,10 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LivingEntity extends Entity implements EquipmentHandler {
@@ -86,6 +88,8 @@ public class LivingEntity extends Entity implements EquipmentHandler {
     private ItemStack chestplate;
     private ItemStack leggings;
     private ItemStack boots;
+
+    private float hurtDir; // Wagasa 1.19.4
 
     /**
      * Constructor which allows to specify an UUID. Only use if you know what you are doing!
@@ -322,21 +326,28 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         }
     }
 
+    // Wagasa start
+    public boolean damage(@NotNull DamageType type, float value) {
+        return damage(type, value, 0f);
+    }
+    // Wagasa end
+
     /**
      * Damages the entity by a value, the type of the damage also has to be specified.
      *
-     * @param type  the damage type
-     * @param value the amount of damage
+     * @param type    the damage type
+     * @param value   the amount of damage
+     * @param hurtDir ダメージを受けた方向
      * @return true if damage has been applied, false if it didn't
      */
-    public boolean damage(@NotNull DamageType type, float value) {
+    public boolean damage(@NotNull DamageType type, float value, float hurtDir) { // Wagasa 1.19.4 hurtDirを追加
         if (isDead())
             return false;
         if (isInvulnerable() || isImmune(type)) {
             return false;
         }
 
-        EntityDamageEvent entityDamageEvent = new EntityDamageEvent(this, type, value, type.getSound(this));
+        EntityDamageEvent entityDamageEvent = new EntityDamageEvent(this, type, value, type.getSound(this), 0f);
         EventDispatcher.callCancellable(entityDamageEvent, () -> {
             // Set the last damage type since the event is not cancelled
             this.lastDamageSource = entityDamageEvent.getDamageType();
@@ -344,7 +355,18 @@ public class LivingEntity extends Entity implements EquipmentHandler {
             float remainingDamage = entityDamageEvent.getDamage();
 
             if (entityDamageEvent.shouldAnimate()) {
-                sendPacketToViewersAndSelf(new EntityAnimationPacket(getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
+                // Rainboots start 1.19.4
+                final var vanillaDamageType = NamespaceID.from(
+                        VariablesKt.WAGASA,
+                        entityDamageEvent.getDamageType().getEffects().getSerializedName()
+                );
+                final var sourceTypeId = Optional.ofNullable(MinecraftServer.getVanillaDamageTypeManager().getByName(vanillaDamageType))
+                        .map(VanillaDamageType::getId)
+                        .orElse(0);
+                final var damageEventPacket = new DamageEventPacket(getEntityId(), sourceTypeId, 0, 0, null);
+                sendPacketToViewersAndSelf(damageEventPacket);
+                playHurtAnimation();
+                // Rainboots end
             }
 
             // Additional hearts support
@@ -687,4 +709,32 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         strength *= 1 - getAttributeValue(Attribute.KNOCKBACK_RESISTANCE);
         super.takeKnockback(strength, x, z);
     }
+
+    // Wagasa start ダメージの向き関連
+    public float getHurtDir() {
+        return hurtDir;
+    }
+
+    public void setHurtDir(float hurtDir) {
+        this.hurtDir = hurtDir;
+    }
+
+    public void setHurtDir(double dirX, double dirZ) {
+        this.hurtDir = (float) (Math.atan2(dirZ, dirX) * 180.0F / (float) Math.PI - (double) this.position.yaw());
+    }
+
+    public void playHurtAnimation() {
+        // Empty
+    }
+
+    public final void playHurtAnimation(float hurtDir) {
+        setHurtDir(hurtDir);
+        playHurtAnimation();
+    }
+
+    public final void playHurtAnimation(double dirX, double dirZ) {
+        setHurtDir(dirX, dirZ);
+        playHurtAnimation();
+    }
+    // Wagasa end
 }

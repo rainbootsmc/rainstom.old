@@ -1,5 +1,6 @@
 package net.minestom.server;
 
+import dev.uten2c.wagasa.damage.VanillaDamageTypeManager;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minestom.server.advancements.AdvancementManager;
 import net.minestom.server.adventure.bossbar.BossBarManager;
@@ -45,9 +46,8 @@ public final class MinecraftServer {
 
     public static final ComponentLogger LOGGER = ComponentLogger.logger(MinecraftServer.class);
 
-    public static final String VERSION_NAME = "1.19.3";
-    public static final int PROTOCOL_VERSION = 761;
-
+    public static final String VERSION_NAME = "1.19.4"; // Wagasa
+    public static final int PROTOCOL_VERSION = 762; // Wagasa
     // Threads
     public static final String THREAD_NAME_BENCHMARK = "Ms-Benchmark";
 
@@ -305,6 +305,12 @@ public final class MinecraftServer {
     public static TagManager getTagManager() {
         return serverProcess.tag();
     }
+
+    // Wagasa start
+    public static VanillaDamageTypeManager getVanillaDamageTypeManager() {
+        return serverProcess.damageType();
+    }
+    // Wagasa end
 
     public static Server getServer() {
         return serverProcess.server();

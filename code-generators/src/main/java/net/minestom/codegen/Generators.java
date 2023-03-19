@@ -1,6 +1,7 @@
 package net.minestom.codegen;
 
 import net.minestom.codegen.color.DyeColorGenerator;
+import net.minestom.codegen.damage.DamageTypeGenerator;
 import net.minestom.codegen.fluid.FluidGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ public class Generators {
         // Generate DyeColors
         new DyeColorGenerator(resource("dye_colors.json"), outputFolder).generate();
 
+        new DamageTypeGenerator(resource("damage_types.json"), outputFolder).generate(); // Wagasa
 
         var generator = new CodeGenerator(outputFolder);
         generator.generate(resource("blocks.json"), "net.minestom.server.instance.block", "Block", "BlockImpl", "Blocks");

@@ -1,5 +1,7 @@
 package net.minestom.server.network;
 
+import dev.uten2c.wagasa.util.math.Quaternionf;
+import dev.uten2c.wagasa.util.math.Vec3f;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minestom.server.coordinate.Point;
@@ -505,6 +507,31 @@ final class NetworkBufferTypes {
                 final int ordinal = buffer.read(VAR_INT);
                 return Entity.Pose.values()[ordinal];
             });
+    // Wagasa start
+    static final TypeImpl<@NotNull Integer> BLOCK_ID = new TypeImpl<>(Integer.class,
+            (buffer, value) -> {
+                buffer.write(VAR_INT, value);
+                return -1;
+            },
+            buffer -> buffer.read(VAR_INT));
+    static final TypeImpl<Vec3f> VECTOR = new TypeImpl<>(Vec3f.class,
+            (buffer, value) -> {
+                buffer.write(FLOAT, value.x());
+                buffer.write(FLOAT, value.y());
+                buffer.write(FLOAT, value.z());
+                return -1;
+            },
+            buffer -> new Vec3f(buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT)));
+    static final TypeImpl<Quaternionf> QUATERNION = new TypeImpl<>(Quaternionf.class,
+            (buffer, value) -> {
+                buffer.write(FLOAT, value.x());
+                buffer.write(FLOAT, value.y());
+                buffer.write(FLOAT, value.z());
+                buffer.write(FLOAT, value.w());
+                return -1;
+            },
+            buffer -> new Quaternionf(buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT)));
+    // Wagasa end
 
     record TypeImpl<T>(@NotNull Class<T> type,
                        @NotNull TypeWriter<T> writer,

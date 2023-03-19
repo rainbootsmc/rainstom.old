@@ -21,6 +21,7 @@ version = "1.0"
 repositories {
     mavenCentral()
     maven(url = "https://jitpack.io")
+    maven("https://maven.uten2c.dev") // Wagasa
 }
 
 dependencies {

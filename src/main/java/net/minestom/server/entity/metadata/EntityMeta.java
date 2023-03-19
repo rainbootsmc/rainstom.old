@@ -1,5 +1,6 @@
 package net.minestom.server.entity.metadata;
 
+import dev.uten2c.wagasa.entity.metadata.MetadataValue;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Metadata;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class EntityMeta {
     public static final byte OFFSET = 0;
@@ -191,4 +193,9 @@ public class EntityMeta {
         }
     }
 
+    // Wagasa start
+    protected final <T extends Metadata.Entry<E>, E> MetadataValue<T, E> metadataValue(int id, E defaultValue, Function<E, T> factory) {
+        return new MetadataValue<>(metadata, id, defaultValue, factory);
+    }
+    // Wagasa end
 }

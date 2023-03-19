@@ -50,6 +50,7 @@ public sealed class ClientPacketsHandler permits ClientPacketsHandler.Status, Cl
         }
     }
 
+    // Wagasa start 変更箇所多いので省略
     public static final class Play extends ClientPacketsHandler {
         public Play() {
             register(0x00, ClientTeleportConfirmPacket::new);
@@ -58,33 +59,33 @@ public sealed class ClientPacketsHandler permits ClientPacketsHandler.Status, Cl
             register(0x03, ClientChatAckPacket::new);
             register(0x04, ClientCommandChatPacket::new);
             register(0x05, ClientChatMessagePacket::new);
-            register(0x06, ClientStatusPacket::new);
-            register(0x07, ClientSettingsPacket::new);
-            register(0x08, ClientTabCompletePacket::new);
-            register(0x09, ClientClickWindowButtonPacket::new);
-            register(0x0A, ClientClickWindowPacket::new);
-            register(0x0B, ClientCloseWindowPacket::new);
-            register(0x0C, ClientPluginMessagePacket::new);
-            register(0x0D, ClientEditBookPacket::new);
-            register(0x0E, ClientQueryEntityNbtPacket::new);
-            register(0x0F, ClientInteractEntityPacket::new);
-            register(0x10, ClientGenerateStructurePacket::new);
-            register(0x11, ClientKeepAlivePacket::new);
-            // 0x12 packet not used server-side
-            register(0x13, ClientPlayerPositionPacket::new);
-            register(0x14, ClientPlayerPositionAndRotationPacket::new);
-            register(0x15, ClientPlayerRotationPacket::new);
-            register(0x16, ClientPlayerPacket::new);
-            register(0x17, ClientVehicleMovePacket::new);
-            register(0x18, ClientSteerBoatPacket::new);
-            register(0x19, ClientPickItemPacket::new);
-            register(0x1A, ClientCraftRecipeRequest::new);
-            register(0x1B, ClientPlayerAbilitiesPacket::new);
-            register(0x1C, ClientPlayerDiggingPacket::new);
-            register(0x1D, ClientEntityActionPacket::new);
-            register(0x1E, ClientSteerVehiclePacket::new);
-            register(0x1F, ClientPongPacket::new);
-            register(0x20, ClientChatSessionUpdatePacket::new);
+            register(0x06, ClientChatSessionUpdatePacket::new);
+            register(0x07, ClientStatusPacket::new);
+            register(0x08, ClientSettingsPacket::new);
+            register(0x09, ClientTabCompletePacket::new);
+            register(0x0A, ClientClickWindowButtonPacket::new);
+            register(0x0B, ClientClickWindowPacket::new);
+            register(0x0C, ClientCloseWindowPacket::new);
+            register(0x0D, ClientPluginMessagePacket::new);
+            register(0x0E, ClientEditBookPacket::new);
+            register(0x0F, ClientQueryEntityNbtPacket::new);
+            register(0x10, ClientInteractEntityPacket::new);
+            register(0x11, ClientGenerateStructurePacket::new);
+            register(0x12, ClientKeepAlivePacket::new);
+            // 0x13 packet not used server-side
+            register(0x14, ClientPlayerPositionPacket::new);
+            register(0x15, ClientPlayerPositionAndRotationPacket::new);
+            register(0x16, ClientPlayerRotationPacket::new);
+            register(0x17, ClientPlayerPacket::new);
+            register(0x18, ClientVehicleMovePacket::new);
+            register(0x19, ClientSteerBoatPacket::new);
+            register(0x1A, ClientPickItemPacket::new);
+            register(0x1B, ClientCraftRecipeRequest::new);
+            register(0x1C, ClientPlayerAbilitiesPacket::new);
+            register(0x1D, ClientPlayerDiggingPacket::new);
+            register(0x1E, ClientEntityActionPacket::new);
+            register(0x1F, ClientSteerVehiclePacket::new);
+            register(0x20, ClientPongPacket::new);
             register(0x21, ClientSetRecipeBookStatePacket::new);
             register(0x22, ClientSetDisplayedRecipePacket::new);
             register(0x23, ClientNameItemPacket::new);
@@ -96,7 +97,7 @@ public sealed class ClientPacketsHandler permits ClientPacketsHandler.Status, Cl
             register(0x29, ClientUpdateCommandBlockPacket::new);
             register(0x2A, ClientUpdateCommandBlockMinecartPacket::new);
             register(0x2B, ClientCreativeInventoryActionPacket::new);
-            // 0x2B Update Jigsaw Block
+            // 0x2C Update Jigsaw Block
             register(0x2D, ClientUpdateStructureBlockPacket::new);
             register(0x2E, ClientUpdateSignPacket::new);
             register(0x2F, ClientAnimationPacket::new);
@@ -105,4 +106,5 @@ public sealed class ClientPacketsHandler permits ClientPacketsHandler.Status, Cl
             register(0x32, ClientUseItemPacket::new);
         }
     }
+    // Wagasa end
 }

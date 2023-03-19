@@ -35,6 +35,7 @@ public final class Biome {
     private final NamespaceID name;
     private final float depth;
     private final float temperature;
+    private final boolean hasPrecipitation; // Wagasa 1.19.4
     private final float scale;
     private final float downfall;
     private final Category category;
@@ -42,10 +43,11 @@ public final class Biome {
     private final Precipitation precipitation;
     private final TemperatureModifier temperatureModifier;
 
-    Biome(NamespaceID name, float depth, float temperature, float scale, float downfall, Category category, BiomeEffects effects, Precipitation precipitation, TemperatureModifier temperatureModifier) {
+    Biome(NamespaceID name, float depth, float temperature, boolean hasPrecipitation, float scale, float downfall, Category category, BiomeEffects effects, Precipitation precipitation, TemperatureModifier temperatureModifier) { // Wagasa
         this.name = name;
         this.depth = depth;
         this.temperature = temperature;
+        this.hasPrecipitation = hasPrecipitation; // Wagasa
         this.scale = scale;
         this.downfall = downfall;
         this.category = category;
@@ -69,6 +71,7 @@ public final class Biome {
             nbt.set("element", NBT.Compound(element -> {
                 element.setFloat("depth", depth);
                 element.setFloat("temperature", temperature);
+                element.set("has_precipitation", NBT.Boolean(hasPrecipitation)); // Rainboots 1.19.4
                 element.setFloat("scale", scale);
                 element.setFloat("downfall", downfall);
                 element.setString("category", category.name().toLowerCase(Locale.ROOT));
@@ -95,6 +98,12 @@ public final class Biome {
     public float temperature() {
         return this.temperature;
     }
+
+    // Wagasa start
+    public boolean hasPrecipitation() {
+        return hasPrecipitation;
+    }
+    // Wagasa end
 
     public float scale() {
         return this.scale;
@@ -138,6 +147,7 @@ public final class Biome {
     public static final class Builder {
         private NamespaceID name;
         private float depth = 0.2f;
+        private boolean hasPrecipitation = true; // Wagasa
         private float temperature = 0.25f;
         private float scale = 0.2f;
         private float downfall = 0.8f;
@@ -163,6 +173,13 @@ public final class Biome {
             this.temperature = temperature;
             return this;
         }
+
+        // Wagasa start
+        public Builder hasPrecipitation(boolean hasPrecipitation) {
+            this.hasPrecipitation = hasPrecipitation;
+            return this;
+        }
+        // Wagasa end
 
         public Builder scale(float scale) {
             this.scale = scale;
@@ -195,7 +212,7 @@ public final class Biome {
         }
 
         public Biome build() {
-            return new Biome(name, depth, temperature, scale, downfall, category, effects, precipitation, temperatureModifier);
+            return new Biome(name, depth, temperature, hasPrecipitation, scale, downfall, category, effects, precipitation, temperatureModifier); // Wagasa
         }
     }
 

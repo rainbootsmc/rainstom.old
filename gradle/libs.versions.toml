@@ -6,9 +6,10 @@ metadata.format.version = "1.1"
 adventure = "4.12.0"
 kotlin = "1.8.10"
 kotlinx-datetime = "0.4.0"
+kotlinx-atomicfu = "0.19.0"
 hydrazine = "1.7.2"
 dependencyGetter = "v1.0.1"
-minestomData = "53e0da5be1"
+minestomData = "1.19.4-SNAPSHOT"
 hephaistos = "2.5.3"
 jetbrainsAnnotations = "23.0.0"
 
@@ -57,11 +58,12 @@ adventure-text-logger-slf4j = { group = "net.kyori", name = "adventure-text-logg
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "kotlinx-atomicfu" }
 
 # Miscellaneous
 hydrazine = { group = "com.github.MadMartian", name = "hydrazine-path-finding", version.ref = "hydrazine" }
 dependencyGetter = { group = "com.github.Minestom", name = "DependencyGetter", version.ref = "dependencyGetter" }
-minestomData = { group = "com.github.Minestom", name = "MinestomDataGenerator", version.ref = "minestomData" }
+minestomData = { group = "net.minestom", name = "minestom-data", version.ref = "minestomData" }
 jetbrainsAnnotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
 
 # Logging
@@ -104,7 +106,7 @@ jcstress-core = { group = "org.openjdk.jcstress", name = "jcstress-core", versio
 
 [bundles]
 
-kotlin = ["kotlin-stdlib-jdk8", "kotlin-reflect", "kotlinx-datetime"]
+kotlin = ["kotlin-stdlib-jdk8", "kotlin-reflect", "kotlinx-datetime", "kotlinx-atomicfu"]
 flare = ["flare", "flare-fastutil"]
 adventure = ["adventure-api", "adventure-serializer-gson", "adventure-serializer-legacy", "adventure-serializer-plain", "adventure-text-logger-slf4j"]
 logging = ["tinylog-api", "tinylog-impl", "tinylog-slf4j"]
@@ -114,3 +116,4 @@ terminal = ["jline", "jline-jansi"]
 
 blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+atomicfu = { id = "org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }

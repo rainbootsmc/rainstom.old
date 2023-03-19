@@ -1,6 +1,6 @@
 package net.minestom.server.entity;
 
-import net.kyori.adventure.audience.MessageType;
+import dev.uten2c.wagasa.network.packet.server.play.HurtAnimationPacket;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
@@ -45,7 +45,6 @@ import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.WrittenBookMeta;
 import net.minestom.server.listener.manager.PacketListenerManager;
 import net.minestom.server.message.ChatMessageType;
-import net.minestom.server.message.ChatPosition;
 import net.minestom.server.message.Messenger;
 import net.minestom.server.network.ConnectionManager;
 import net.minestom.server.network.ConnectionState;
@@ -249,7 +248,9 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         NBTCompound nbt = NBT.Compound(Map.of(
                 "minecraft:chat_type", Messenger.chatRegistry(),
                 "minecraft:dimension_type", MinecraftServer.getDimensionTypeManager().toNBT(),
-                "minecraft:worldgen/biome", MinecraftServer.getBiomeManager().toNBT()));
+                "minecraft:worldgen/biome", MinecraftServer.getBiomeManager().toNBT(),
+                "minecraft:damage_type", MinecraftServer.getVanillaDamageTypeManager().toNBT()
+        ));
         final JoinGamePacket joinGamePacket = new JoinGamePacket(getEntityId(), false, gameMode, null,
                 List.of(dimensionType.getName().asString()), nbt, dimensionType.toString(), dimensionType.getName().asString(),
                 0, 0, MinecraftServer.getChunkViewDistance(), MinecraftServer.getChunkViewDistance(),
@@ -695,10 +696,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPluginMessage(channel, message.getBytes(StandardCharsets.UTF_8));
     }
 
-    @Override
-    public void sendMessage(@NotNull Identity source, @NotNull Component message, @NotNull MessageType type) {
-        Messenger.sendMessage(this, message, ChatPosition.fromMessageType(type), source.uuid());
-    }
+    // Wagasa 非推奨のsendMessageを削除
 
     @Override
     public void playSound(@NotNull Sound sound) {
@@ -1536,7 +1534,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     @ApiStatus.Internal
     protected void synchronizePosition(boolean includeSelf) {
         if (includeSelf) {
-            sendPacket(new PlayerPositionAndLookPacket(position, (byte) 0x00, getNextTeleportId(), false));
+            sendPacket(new PlayerPositionAndLookPacket(position, (byte) 0x00, getNextTeleportId())); // Wagasa 1.19.4 dismountVehicleを削除
         }
         super.synchronizePosition(includeSelf);
     }
@@ -2214,4 +2212,10 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
 
     }
 
+    // Wagasa start ダメージの向き関連
+    @Override
+    public void playHurtAnimation() {
+        sendPacket(new HurtAnimationPacket(getEntityId(), getHurtDir()));
+    }
+    // Wagasa end
 }

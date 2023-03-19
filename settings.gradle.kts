@@ -4,6 +4,7 @@ enableFeaturePreview("VERSION_CATALOGS")
 dependencyResolutionManagement {
     repositories {
         maven("https://jitpack.io")
+        maven("https://maven.uten2c.dev") // Wagasa
         mavenCentral()
     }
 }

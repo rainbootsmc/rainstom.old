@@ -1,5 +1,6 @@
 package net.minestom.server.entity.damage;
 
+import dev.uten2c.wagasa.damage.DamageEffects;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.LivingEntity;
@@ -18,15 +19,16 @@ import org.jetbrains.annotations.Nullable;
  */
 public class DamageType implements Taggable {
 
-    public static final DamageType VOID = new DamageType("attack.outOfWorld");
-    public static final DamageType GRAVITY = new DamageType("attack.fall");
-    public static final DamageType ON_FIRE = new DamageType("attack.onFire") {
+    public static final DamageType VOID = new DamageType("attack.outOfWorld", DamageEffects.HURT); // Wagasa DamageEffectsを追加
+    public static final DamageType GRAVITY = new DamageType("attack.fall", DamageEffects.HURT); // Wagasa DamageEffectsを追加
+    public static final DamageType ON_FIRE = new DamageType("attack.onFire", DamageEffects.BURNING) { // Wagasa DamageEffectsを追加
         @Override
         protected SoundEvent getPlayerSound(@NotNull Player player) {
-            return SoundEvent.ENTITY_PLAYER_HURT_ON_FIRE;
+            return DamageEffects.BURNING.getPlayerSound(); // Wagasa DamageEffectsから参照するようにする
         }
     };
     private final String identifier;
+    private final DamageEffects effects; // Wagasa DamageEffectsを追加
     private final TagHandler tagHandler = TagHandler.newHandler();
 
     /**
@@ -34,9 +36,11 @@ public class DamageType implements Taggable {
      *
      * @param identifier the identifier of this damage type,
      *                   does not need to be unique
+     * @param effects    クライアントでのダメージ演出
      */
-    public DamageType(@NotNull String identifier) {
+    public DamageType(@NotNull String identifier, @NotNull DamageEffects effects) { // Wagasa DamageEffectsを追加
         this.identifier = identifier;
+        this.effects = effects; // Wagasa DamageEffectsを追加
     }
 
     /**
@@ -48,6 +52,15 @@ public class DamageType implements Taggable {
      */
     public @NotNull String getIdentifier() {
         return identifier;
+    }
+
+    /**
+     * クライアントでのダメージ演出の種類を取得する
+     *
+     * @return クライアントでのダメージ演出
+     */
+    public DamageEffects getEffects() {
+        return effects;
     }
 
     /**

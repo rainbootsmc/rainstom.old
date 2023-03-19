@@ -1,5 +1,9 @@
 package net.minestom.server.entity;
 
+import dev.uten2c.wagasa.entity.metadata.other.InteractionMeta;
+import dev.uten2c.wagasa.entity.metadata.other.display.BlockDisplayMeta;
+import dev.uten2c.wagasa.entity.metadata.other.display.ItemDisplayMeta;
+import dev.uten2c.wagasa.entity.metadata.other.display.TextDisplayMeta;
 import net.minestom.server.entity.metadata.EntityMeta;
 import net.minestom.server.entity.metadata.PlayerMeta;
 import net.minestom.server.entity.metadata.ambient.BatMeta;
@@ -83,7 +87,9 @@ record EntityTypeImpl(Registry.EntityEntry registry) implements EntityType {
                 entry("minecraft:bat", BatMeta::new),
                 entry("minecraft:bee", BeeMeta::new),
                 entry("minecraft:blaze", BlazeMeta::new),
+                entry("minecraft:block_display", BlockDisplayMeta::new), // Wagasa 1.19.4
                 entry("minecraft:boat", BoatMeta::new),
+                entry("minecraft:camel", EntityMeta::new), // TODO dedicated metadata // Wagasa 1.19.3
                 entry("minecraft:chest_boat", EntityMeta::new), // TODO dedicated metadata
                 entry("minecraft:cat", CatMeta::new),
                 entry("minecraft:cave_spider", CaveSpiderMeta::new),
@@ -118,8 +124,10 @@ record EntityTypeImpl(Registry.EntityEntry registry) implements EntityType {
                 entry("minecraft:horse", HorseMeta::new),
                 entry("minecraft:husk", HuskMeta::new),
                 entry("minecraft:illusioner", IllusionerMeta::new),
+                entry("minecraft:interaction", InteractionMeta::new), // Wagasa 1.19.4
                 entry("minecraft:iron_golem", IronGolemMeta::new),
                 entry("minecraft:item", ItemEntityMeta::new),
+                entry("minecraft:item_display", ItemDisplayMeta::new), // Wagasa 1.19.4
                 entry("minecraft:item_frame", ItemFrameMeta::new),
                 entry("minecraft:fireball", FireballMeta::new),
                 entry("minecraft:leash_knot", LeashKnotMeta::new),
@@ -159,6 +167,7 @@ record EntityTypeImpl(Registry.EntityEntry registry) implements EntityType {
                 entry("minecraft:skeleton", SkeletonMeta::new),
                 entry("minecraft:skeleton_horse", SkeletonHorseMeta::new),
                 entry("minecraft:slime", SlimeMeta::new),
+                entry("minecraft:sniffer", EntityMeta::new), // TODO dedicated metadata // Wagasa 1.19.4
                 entry("minecraft:small_fireball", SmallFireballMeta::new),
                 entry("minecraft:snow_golem", SnowGolemMeta::new),
                 entry("minecraft:snowball", SnowballMeta::new),
@@ -168,6 +177,7 @@ record EntityTypeImpl(Registry.EntityEntry registry) implements EntityType {
                 entry("minecraft:stray", StrayMeta::new),
                 entry("minecraft:strider", StriderMeta::new),
                 entry("minecraft:tadpole", EntityMeta::new), // TODO dedicated metadata
+                entry("minecraft:text_display", TextDisplayMeta::new), // Wagasa 1.19.4
                 entry("minecraft:egg", ThrownEggMeta::new),
                 entry("minecraft:ender_pearl", ThrownEnderPearlMeta::new),
                 entry("minecraft:experience_bottle", ThrownExperienceBottleMeta::new),
