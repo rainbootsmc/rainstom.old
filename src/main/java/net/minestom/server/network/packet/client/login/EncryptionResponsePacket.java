@@ -1,12 +1,14 @@
 package net.minestom.server.network.packet.client.login;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.mojangAuth.MojangCrypt;
 import net.minestom.server.network.NetworkBuffer;
 import net.minestom.server.network.packet.client.ClientPreplayPacket;
+import net.minestom.server.network.player.GameProfile;
 import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.network.player.PlayerSocketConnection;
 import net.minestom.server.utils.async.AsyncUtils;
@@ -20,6 +22,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -89,6 +92,14 @@ public record EncryptionResponsePacket(byte[] sharedSecret,
 
                     MinecraftServer.LOGGER.info("UUID of player {} is {}", loginUsername, profileUUID);
                     CONNECTION_MANAGER.startPlayState(connection, profileUUID, profileName, true);
+                    // Wagasa start MojangAuthを使用している場合はGameProfileを設定する
+                    final var properties = new ArrayList<GameProfile.Property>();
+                    for (JsonElement element : gameProfile.get("properties").getAsJsonArray()) {
+                        final var object = element.getAsJsonObject();
+                        properties.add(new GameProfile.Property(object.get("name").getAsString(), object.get("value").getAsString(), object.get("signature").getAsString()));
+                    }
+                    socketConnection.UNSAFE_setProfile(new GameProfile(profileUUID, profileName, properties));
+                    // Wagasa end
                 } catch (Exception e) {
                     MinecraftServer.getExceptionManager().handleException(e);
                 }
