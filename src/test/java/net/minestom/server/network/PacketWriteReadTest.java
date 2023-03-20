@@ -111,12 +111,12 @@ public class PacketWriteReadTest {
         SERVER_PACKETS.add(new EntityPositionPacket(5, (short) 0, (short) 0, (short) 0, true));
         SERVER_PACKETS.add(new EntityPropertiesPacket(5, List.of()));
         SERVER_PACKETS.add(new EntityRotationPacket(5, 45f, 45f, false));
-        // Rainboots start 1.19.4
+        // Wagasa start 1.19.4
         SERVER_PACKETS.add(new BundleDelimiterPacket());
         SERVER_PACKETS.add(new ChunksBiomesPacket(Collections.emptyList()));
         SERVER_PACKETS.add(new DamageEventPacket(5, 0, 0, 0, null));
         SERVER_PACKETS.add(new HurtAnimationPacket(5, 0f));
-        // Rainboots end
+        // Wagasa end
 
         final PlayerSkin skin = new PlayerSkin("hh", "hh");
         List<PlayerInfoUpdatePacket.Property> prop = List.of(new PlayerInfoUpdatePacket.Property("textures", skin.textures(), skin.signature()));

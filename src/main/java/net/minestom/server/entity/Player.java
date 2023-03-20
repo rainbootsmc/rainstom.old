@@ -2,6 +2,7 @@ package net.minestom.server.entity;
 
 import dev.uten2c.wagasa.event.player.PlayerDrinkEvent;
 import dev.uten2c.wagasa.inventory.InventoryListener;
+import dev.uten2c.wagasa.network.packet.server.play.BundleDelimiterPacket;
 import dev.uten2c.wagasa.network.packet.server.play.HurtAnimationPacket;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
@@ -1146,10 +1147,14 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPacketsToViewers(getEntityType().registry().spawnType().getSpawnPacket(this));
 
         // Update for viewers
-        sendPacketToViewersAndSelf(getVelocityPacket());
-        sendPacketToViewersAndSelf(getMetadataPacket());
-        sendPacketToViewersAndSelf(getPropertiesPacket());
-        sendPacketToViewersAndSelf(getEquipmentsPacket());
+        // Wagasa start バンドルパケットで送る
+        sendBundledPacketsToViewersAndSelf(List.of(
+                getVelocityPacket(),
+                getMetadataPacket(),
+                getPropertiesPacket(),
+                getEquipmentsPacket()
+        ));
+        // Wagasa end
 
         getInventory().update();
     }
@@ -1206,13 +1211,13 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPacket(new SetExperiencePacket(exp, level, 0));
     }
 
-    // Rainboots start
+    // Wagasa start
     public void setExpAndLevel(float exp, int level) {
         this.exp = exp;
         this.level = level;
         sendPacket(new SetExperiencePacket(exp, level, 0));
     }
-    // Rainboots end
+    // Wagasa end
 
     /**
      * Gets the player connection.
@@ -1244,6 +1249,18 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     public void sendPackets(@NotNull Collection<SendablePacket> packets) {
         this.playerConnection.sendPackets(packets);
     }
+
+    // Wagasa start バンドルパケットで送れるようにする
+    public void sendBundledPackets(@NotNull SendablePacket... packets) {
+        sendBundledPackets(List.of(packets));
+    }
+
+    public void sendBundledPackets(@NotNull Collection<SendablePacket> packets) {
+        sendPacket(new BundleDelimiterPacket());
+        sendPackets(packets);
+        sendPacket(new BundleDelimiterPacket());
+    }
+    // Wagasa end
 
     /**
      * Gets if the player is online or not.
@@ -1963,18 +1980,22 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
      * @param connection the connection to show the player to
      */
     protected void showPlayer(@NotNull PlayerConnection connection) {
-        connection.sendPacket(getEntityType().registry().spawnType().getSpawnPacket(this));
-        connection.sendPacket(getVelocityPacket());
-        connection.sendPacket(getMetadataPacket());
-        connection.sendPacket(getEquipmentsPacket());
+        // Wagasa start バンドルパケットで送る
+        final var packets = new ArrayList<SendablePacket>();
+        packets.add(getEntityType().registry().spawnType().getSpawnPacket(this));
+        packets.add(getVelocityPacket());
+        packets.add(getMetadataPacket());
+        packets.add(getEquipmentsPacket());
         if (hasPassenger()) {
-            connection.sendPacket(getPassengersPacket());
+            packets.add(getPassengersPacket());
         }
         // Team
         if (this.getTeam() != null) {
-            connection.sendPacket(this.getTeam().createTeamsCreationPacket());
+            packets.add(this.getTeam().createTeamsCreationPacket());
         }
-        connection.sendPacket(new EntityHeadLookPacket(getEntityId(), position.yaw()));
+        packets.add(new EntityHeadLookPacket(getEntityId(), position.yaw()));
+        sendBundledPackets(packets);
+        // Wagasa end
     }
 
     @Override

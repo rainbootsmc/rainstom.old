@@ -142,7 +142,7 @@ public final class Registry {
         POTION_EFFECTS("potion_effects.json"),
         POTION_TYPES("potions.json"),
         PARTICLES("particles.json"),
-        DAMAGE_TYPES("damage_types.json"), // Rainboots 1.19.4
+        DAMAGE_TYPES("damage_types.json"), // Wagasa 1.19.4
 
         BLOCK_TAGS("tags/block_tags.json"),
         ENTITY_TYPE_TAGS("tags/entity_type_tags.json"),

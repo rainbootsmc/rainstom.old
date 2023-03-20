@@ -71,7 +71,7 @@ public final class Biome {
             nbt.set("element", NBT.Compound(element -> {
                 element.setFloat("depth", depth);
                 element.setFloat("temperature", temperature);
-                element.set("has_precipitation", NBT.Boolean(hasPrecipitation)); // Rainboots 1.19.4
+                element.set("has_precipitation", NBT.Boolean(hasPrecipitation)); // Wagasa 1.19.4
                 element.setFloat("scale", scale);
                 element.setFloat("downfall", downfall);
                 element.setString("category", category.name().toLowerCase(Locale.ROOT));

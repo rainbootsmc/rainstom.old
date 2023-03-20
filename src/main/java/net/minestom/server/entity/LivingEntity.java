@@ -355,7 +355,7 @@ public class LivingEntity extends Entity implements EquipmentHandler {
             float remainingDamage = entityDamageEvent.getDamage();
 
             if (entityDamageEvent.shouldAnimate()) {
-                // Rainboots start 1.19.4
+                // Wagasa start 1.19.4
                 final var vanillaDamageType = NamespaceID.from(
                         VariablesKt.WAGASA,
                         entityDamageEvent.getDamageType().getEffects().getSerializedName()
@@ -366,7 +366,7 @@ public class LivingEntity extends Entity implements EquipmentHandler {
                 final var damageEventPacket = new DamageEventPacket(getEntityId(), sourceTypeId, 0, 0, null);
                 sendPacketToViewersAndSelf(damageEventPacket);
                 playHurtAnimation();
-                // Rainboots end
+                // Wagasa end
             }
 
             // Additional hearts support
@@ -546,14 +546,14 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         player.sendPacket(new LazyPacket(this::getPropertiesPacket));
         if (getTeam() != null) player.sendPacket(getTeam().createTeamsCreationPacket());
 
-        // Rainboots start Passengerが存在する場合は一緒に送る
+        // Wagasa start Passengerが存在する場合は一緒に送る
         if (hasPassenger()) {
             player.sendPacket(new LazyPacket(this::getPassengersPacket));
         }
         if (vehicle != null) {
             player.sendPacket(vehicle.getPassengersPacket());
         }
-        // Rainboots end
+        // Wagasa end
     }
 
     @Override

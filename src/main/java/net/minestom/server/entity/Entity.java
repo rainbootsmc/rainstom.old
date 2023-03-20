@@ -704,7 +704,7 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
             if (timedPotion.getPotion().duration() == -1) {
                 return false;
             }
-            // Rainboots end
+            // Wagasa end
             final long potionTime = (long) timedPotion.getPotion().duration() * MinecraftServer.TICK_MS;
             // Remove if the potion should be expired
             if (time >= timedPotion.getStartingTime() + potionTime) {
