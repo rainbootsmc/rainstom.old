@@ -19,12 +19,14 @@ import net.minestom.server.utils.TickUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Random;
 
 /**
  * Utility methods to convert adventure enums to their packet values.
  */
 public class AdventurePacketConvertor {
     private static final Object2IntMap<NamedTextColor> NAMED_TEXT_COLOR_ID_MAP = new Object2IntArrayMap<>(16);
+    private static final Random SOUND_SEED_RANDOM = new Random(); // Wagasa SoundEffectPacket用のランダム
 
     static {
         NAMED_TEXT_COLOR_ID_MAP.put(NamedTextColor.BLACK, 0);
@@ -113,10 +115,10 @@ public class AdventurePacketConvertor {
         // Wagasa start 1.19.3に合わせる
         if (minestomSound == null) {
             return new SoundEffectPacket(sound.name(), null, sound.source(),
-                    x, y, z, sound.volume(), sound.pitch(), 0);
+                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Wagasa seedをランダムにする
         } else {
             return new SoundEffectPacket(minestomSound.id(), sound.source(),
-                    x, y, z, sound.volume(), sound.pitch(), 0);
+                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Wagasa seedをランダムにする
         }
         // Wagasa end
     }
@@ -142,7 +144,7 @@ public class AdventurePacketConvertor {
             final Pos pos = entity.getPosition();
             // Wagasa start 1.19.3に合わせる
             return new SoundEffectPacket(sound.name(), null, sound.source(),
-                    pos.x(), pos.y(), pos.z(), sound.volume(), sound.pitch(), 0);
+                    pos.x(), pos.y(), pos.z(), sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Wagasa seedをランダムにする
             // Wagasa end
         }
     }
