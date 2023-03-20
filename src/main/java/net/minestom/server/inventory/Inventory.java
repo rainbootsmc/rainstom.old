@@ -1,5 +1,6 @@
 package net.minestom.server.inventory;
 
+import dev.uten2c.wagasa.inventory.InventoryListener;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.Viewable;
 import net.minestom.server.entity.Player;
@@ -158,6 +159,13 @@ public non-sealed class Inventory extends AbstractInventory implements Viewable 
         final boolean result = this.viewers.remove(player);
         setCursorItem(player, ItemStack.AIR);
         this.clickProcessor.clearCache(player);
+
+        // Wagasa start InventoryListenerのonCloseを呼び出す
+        if (this instanceof InventoryListener inventoryListener) {
+            inventoryListener.onClose(player);
+        }
+        // Wagasa end
+
         return result;
     }
 

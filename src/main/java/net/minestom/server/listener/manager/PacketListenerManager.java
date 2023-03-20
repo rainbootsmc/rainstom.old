@@ -1,5 +1,8 @@
 package net.minestom.server.listener.manager;
 
+import dev.uten2c.wagasa.server.listener.ChatSessionUpdateListener;
+import dev.uten2c.wagasa.server.listener.RecipeBookListener;
+import dev.uten2c.wagasa.server.listener.WindowButtonPacketListener;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerProcess;
 import net.minestom.server.entity.Player;
@@ -57,6 +60,12 @@ public final class PacketListenerManager {
         setListener(ClientAdvancementTabPacket.class, AdvancementTabListener::listener);
         setListener(ClientSpectatePacket.class, SpectateListener::listener);
         setListener(ClientEditBookPacket.class, BookListener::listener);
+
+        // Wagasa start Minestomで定義されていないパケットリスナーを定義
+        setListener(ClientSetRecipeBookStatePacket.class, RecipeBookListener::listener);
+        setListener(ClientClickWindowButtonPacket.class, WindowButtonPacketListener::listener);
+        setListener(ClientChatSessionUpdatePacket.class, ChatSessionUpdateListener::listener);
+        // Wagasa end
     }
 
     /**

@@ -132,7 +132,7 @@ public final class PlayerDiggingListener {
         Player.Hand hand = meta.getActiveHand();
 
         player.refreshEating(null);
-        player.triggerStatus((byte) 9);
+        // player.triggerStatus((byte) 9); // Wagasa Minestomのバグ? ここで送ると食事を完了してなくても完了したときのパケットが送られる
 
         ItemUpdateStateEvent itemUpdateStateEvent = player.callItemUpdateStateEvent(hand);
         if (itemUpdateStateEvent == null) {

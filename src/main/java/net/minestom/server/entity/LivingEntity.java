@@ -489,7 +489,11 @@ public class LivingEntity extends Entity implements EquipmentHandler {
             // connection null during Player initialization (due to #super call)
             self = playerConnection != null && playerConnection.getConnectionState() == ConnectionState.PLAY;
         }
-        EntityPropertiesPacket propertiesPacket = new EntityPropertiesPacket(getEntityId(), List.of(attributeInstance));
+        // Wagasa start Minestomでは新規追加されたattributeしか送っていないので直す
+        final var list = new ArrayList<AttributeInstance>(attributeModifiers.values());
+        list.add(attributeInstance);
+        EntityPropertiesPacket propertiesPacket = new EntityPropertiesPacket(getEntityId(), list);
+        // Wagasa end
         if (self) {
             sendPacketToViewersAndSelf(propertiesPacket);
         } else {
@@ -541,6 +545,15 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         player.sendPacket(new LazyPacket(this::getEquipmentsPacket));
         player.sendPacket(new LazyPacket(this::getPropertiesPacket));
         if (getTeam() != null) player.sendPacket(getTeam().createTeamsCreationPacket());
+
+        // Rainboots start Passengerが存在する場合は一緒に送る
+        if (hasPassenger()) {
+            player.sendPacket(new LazyPacket(this::getPassengersPacket));
+        }
+        if (vehicle != null) {
+            player.sendPacket(vehicle.getPassengersPacket());
+        }
+        // Rainboots end
     }
 
     @Override

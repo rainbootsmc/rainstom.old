@@ -1,5 +1,6 @@
 package net.minestom.server.inventory;
 
+import dev.uten2c.wagasa.inventory.InventoryListener;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.event.inventory.InventoryItemChangeEvent;
 import net.minestom.server.event.inventory.PlayerInventoryItemChangeEvent;
@@ -82,6 +83,12 @@ public sealed abstract class AbstractInventory implements InventoryClickHandler,
             EventDispatcher.call(new PlayerInventoryItemChangeEvent(inv.player, slot, previous, itemStack));
         } else if (this instanceof Inventory inv) {
             EventDispatcher.call(new InventoryItemChangeEvent(inv, slot, previous, itemStack));
+
+            // Wagasa start InventoryListenerのonItemChangeを呼び出す
+            if (this instanceof InventoryListener inventoryListener) {
+                inventoryListener.onItemChange(slot, previous, itemStack);
+            }
+            // Wagasa end
         }
     }
 

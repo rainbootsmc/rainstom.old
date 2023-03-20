@@ -131,7 +131,11 @@ public enum ServerListPingType {
         final JsonObject jsonObject = new JsonObject();
         jsonObject.add("version", versionObject);
         jsonObject.add("players", playersObject);
-        jsonObject.addProperty("favicon", data.getFavicon());
+        // Wagasa start faviconが空ならプロパティを追加しない
+        if (!data.getFavicon().isEmpty()) {
+            jsonObject.addProperty("favicon", data.getFavicon());
+        }
+        // Wagasa end
 
         // description
         if (supportsFullRgb) {

@@ -1,5 +1,7 @@
 package net.minestom.server.entity;
 
+import dev.uten2c.wagasa.event.player.PlayerDrinkEvent;
+import dev.uten2c.wagasa.inventory.InventoryListener;
 import dev.uten2c.wagasa.network.packet.server.play.HurtAnimationPacket;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
@@ -167,7 +169,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     private int food;
     private float foodSaturation;
     private long startEatingTime;
-    private long defaultEatingTime = 1000L;
+    private long defaultEatingTime = 1600L; // Wagasa バニラに合わせる 1000 -> 1600
     private long eatingTime;
     private Hand eatingHand;
 
@@ -379,6 +381,12 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
                     PlayerEatEvent playerEatEvent = new PlayerEatEvent(this, foodItem, eatingHand);
                     EventDispatcher.call(playerEatEvent);
                 }
+                // Wagasa start ポーション対応
+                else if (foodItem.material().isDrink()) {
+                    final var playerDrinkEvent = new PlayerDrinkEvent(this, foodItem, eatingHand);
+                    EventDispatcher.call(playerDrinkEvent);
+                }
+                // Wagasa end
 
                 refreshEating(null);
             }
@@ -1198,6 +1206,14 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPacket(new SetExperiencePacket(exp, level, 0));
     }
 
+    // Rainboots start
+    public void setExpAndLevel(float exp, int level) {
+        this.exp = exp;
+        this.level = level;
+        sendPacket(new SetExperiencePacket(exp, level, 0));
+    }
+    // Rainboots end
+
     /**
      * Gets the player connection.
      * <p>
@@ -1446,6 +1462,12 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
                     newInventory.getInventoryType().getWindowType(), newInventory.getTitle()));
             newInventory.addViewer(this);
             this.openInventory = newInventory;
+
+            // Wagasa start InventoryListenerのonOpenを呼び出す
+            if (newInventory instanceof InventoryListener inventoryListener) {
+                inventoryListener.onOpen(this);
+            }
+            // Wagasa end
         });
         return !inventoryOpenEvent.isCancelled();
     }
@@ -1864,9 +1886,9 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
             return null;
 
         final ItemStack updatedItem = getItemInHand(hand);
-        final boolean isFood = updatedItem.material().isFood();
+        final boolean isFoodOrDrink = updatedItem.material().isFoodOrDrink(); // Wagasa ポーション対応
 
-        if (isFood && !allowFood)
+        if (isFoodOrDrink && !allowFood) // Wagasa ポーション対応
             return null;
 
         ItemUpdateStateEvent itemUpdateStateEvent = new ItemUpdateStateEvent(this, hand, updatedItem);
