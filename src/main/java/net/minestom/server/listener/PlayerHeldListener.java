@@ -1,5 +1,6 @@
 package net.minestom.server.listener;
 
+import dev.uten2c.wagasa.event.player.PlayerChangedHeldSlotEvent;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
 import net.minestom.server.event.player.PlayerChangeHeldSlotEvent;
@@ -15,6 +16,7 @@ public class PlayerHeldListener {
         }
 
         final byte slot = (byte) packet.slot();
+        final var previousSlot = player.getHeldSlot(); // Wagasa 下で呼び出すPlayerChangedHeldSlotEvent用
 
         PlayerChangeHeldSlotEvent changeHeldSlotEvent = new PlayerChangeHeldSlotEvent(player, slot);
         EventDispatcher.call(changeHeldSlotEvent);
@@ -31,6 +33,7 @@ public class PlayerHeldListener {
                 // Otherwise, simply refresh the player field
                 player.refreshHeldSlot(resultSlot);
             }
+            EventDispatcher.call(new PlayerChangedHeldSlotEvent(player, previousSlot, resultSlot)); // Wagasa イベント呼び出し
         } else {
             // Event has been canceled, send the last held slot to refresh the client
             player.setHeldItemSlot(player.getHeldSlot());
