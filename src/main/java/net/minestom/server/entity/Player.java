@@ -2,6 +2,8 @@ package net.minestom.server.entity;
 
 import dev.uten2c.wagasa.event.player.PlayerDrinkEvent;
 import dev.uten2c.wagasa.inventory.InventoryListener;
+import dev.uten2c.wagasa.item.drop.DropAmount;
+import dev.uten2c.wagasa.item.drop.DropType;
 import dev.uten2c.wagasa.network.packet.server.play.BundleDelimiterPacket;
 import dev.uten2c.wagasa.network.packet.server.play.HurtAnimationPacket;
 import net.kyori.adventure.bossbar.BossBar;
@@ -1048,16 +1050,18 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     }
 
     /**
-     * Calls an {@link ItemDropEvent} with a specified item.
+     * Calls an {@link ItemDropEvent} with a specified item, type and amount.
      * <p>
      * Returns false if {@code item} is air.
      *
-     * @param item the item to drop
+     * @param item   the item to drop
+     * @param type   ドロップタイプ
+     * @param amount 一つだけドロップするかすべてドロップするか
      * @return true if player can drop the item (event not cancelled), false otherwise
      */
-    public boolean dropItem(@NotNull ItemStack item) {
+    public boolean dropItem(@NotNull ItemStack item, @NotNull DropType type, @NotNull DropAmount amount) { // Wagasa DropTypeとDropAmountを追加
         if (item.isAir()) return false;
-        ItemDropEvent itemDropEvent = new ItemDropEvent(this, item);
+        ItemDropEvent itemDropEvent = new ItemDropEvent(this, item, type, amount); // Wagasa DropTypeとDropAmountを追加
         EventDispatcher.call(itemDropEvent);
         return !itemDropEvent.isCancelled();
     }
@@ -1507,7 +1511,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         }
         if (!cursorItem.isAir()) {
             // Add item to inventory if he hasn't been able to drop it
-            if (!dropItem(cursorItem)) {
+            if (!dropItem(cursorItem, new DropType.InventoryClose(openInventory == null ? getInventory() : openInventory), DropAmount.STACK)) { // Wagasa DropTypeとDropAmountを追加
                 getInventory().addItemStack(cursorItem);
             }
         }

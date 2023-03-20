@@ -1,5 +1,7 @@
 package net.minestom.server.inventory.click;
 
+import dev.uten2c.wagasa.item.drop.DropAmount;
+import dev.uten2c.wagasa.item.drop.DropType;
 import net.minestom.server.entity.EquipmentSlot;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventDispatcher;
@@ -367,7 +369,7 @@ public final class InventoryClickProcessor {
                 // Left (drop all)
                 final int amount = rule.getAmount(resultCursor);
                 final ItemStack dropItem = rule.apply(resultCursor, amount);
-                final boolean dropResult = player.dropItem(dropItem);
+                final boolean dropResult = player.dropItem(dropItem, new DropType.Inventory(inventory), DropAmount.STACK); // Wagasa DropTypeとDropAmountを追加
                 clickResult.setCancel(!dropResult);
                 if (dropResult) {
                     resultCursor = rule.apply(resultCursor, 0);
@@ -375,7 +377,7 @@ public final class InventoryClickProcessor {
             } else if (button == 1) {
                 // Right (drop 1)
                 final ItemStack dropItem = rule.apply(resultCursor, 1);
-                final boolean dropResult = player.dropItem(dropItem);
+                final boolean dropResult = player.dropItem(dropItem, new DropType.Inventory(inventory), DropAmount.SINGLE); // Wagasa DropTypeとDropAmountを追加
                 clickResult.setCancel(!dropResult);
                 if (dropResult) {
                     final int amount = rule.getAmount(resultCursor);
@@ -388,7 +390,7 @@ public final class InventoryClickProcessor {
             if (button == 0) {
                 // Drop key Q (drop 1)
                 final ItemStack dropItem = rule.apply(resultClicked, 1);
-                final boolean dropResult = player.dropItem(dropItem);
+                final boolean dropResult = player.dropItem(dropItem, new DropType.Inventory(inventory), DropAmount.SINGLE); // Wagasa DropTypeとDropAmountを追加
                 clickResult.setCancel(!dropResult);
                 if (dropResult) {
                     final int amount = rule.getAmount(resultClicked);
@@ -399,7 +401,7 @@ public final class InventoryClickProcessor {
                 // Ctrl + Drop key Q (drop all)
                 final int amount = rule.getAmount(resultClicked);
                 final ItemStack dropItem = rule.apply(resultClicked, amount);
-                final boolean dropResult = player.dropItem(dropItem);
+                final boolean dropResult = player.dropItem(dropItem, new DropType.Inventory(inventory), DropAmount.STACK); // Wagasa DropTypeとDropAmountを追加
                 clickResult.setCancel(!dropResult);
                 if (dropResult) {
                     resultClicked = rule.apply(resultClicked, 0);
