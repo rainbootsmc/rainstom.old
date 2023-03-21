@@ -50,7 +50,7 @@ public sealed class ClientPacketsHandler permits ClientPacketsHandler.Status, Cl
         }
     }
 
-    // Wagasa start 変更箇所多いので省略
+    // Rainstom start 変更箇所多いので省略
     public static final class Play extends ClientPacketsHandler {
         public Play() {
             register(0x00, ClientTeleportConfirmPacket::new);
@@ -106,5 +106,5 @@ public sealed class ClientPacketsHandler permits ClientPacketsHandler.Status, Cl
             register(0x32, ClientUseItemPacket::new);
         }
     }
-    // Wagasa end
+    // Rainstom end
 }

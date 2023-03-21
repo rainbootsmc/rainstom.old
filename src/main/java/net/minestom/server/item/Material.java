@@ -38,7 +38,7 @@ public sealed interface Material extends ProtocolObject, Materials permits Mater
         return registry().isFood();
     }
 
-    // Wagasa start ポーション対応
+    // Rainstom start ポーション対応
     default boolean isDrink() {
         return this == Material.POTION;
     }
@@ -46,7 +46,7 @@ public sealed interface Material extends ProtocolObject, Materials permits Mater
     default boolean isFoodOrDrink() {
         return isFood() || isDrink();
     }
-    // Wagasa end
+    // Rainstom end
 
     default boolean isBlock() {
         return registry().block() != null;
@@ -64,7 +64,7 @@ public sealed interface Material extends ProtocolObject, Materials permits Mater
         if (this == BOW || this == TRIDENT || this == CROSSBOW || this == SHIELD) {
             return true;
         } else {
-            return isFoodOrDrink(); // Wagasa ポーションも含める
+            return isFoodOrDrink(); // Rainstom ポーションも含める
         }
     }
 

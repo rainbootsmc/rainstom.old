@@ -1,6 +1,6 @@
 package net.minestom.server;
 
-import dev.uten2c.wagasa.damage.VanillaDamageTypeManager;
+import dev.uten2c.rainstom.damage.VanillaDamageTypeManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minestom.server.advancements.AdvancementManager;
 import net.minestom.server.adventure.bossbar.BossBarManager;
@@ -65,7 +65,7 @@ final class ServerProcessImpl implements ServerProcess {
     private final AdvancementManager advancement;
     private final BossBarManager bossBar;
     private final TagManager tag;
-    private final VanillaDamageTypeManager damageType; // Wagasa
+    private final VanillaDamageTypeManager damageType; // Rainstom
     private final Server server;
 
     private final ThreadDispatcher<Chunk> dispatcher;
@@ -93,7 +93,7 @@ final class ServerProcessImpl implements ServerProcess {
         this.advancement = new AdvancementManager();
         this.bossBar = new BossBarManager();
         this.tag = new TagManager();
-        this.damageType = new VanillaDamageTypeManager(); // Wagasa
+        this.damageType = new VanillaDamageTypeManager(); // Rainstom
         this.server = new Server(packetProcessor);
 
         this.dispatcher = ThreadDispatcher.singleThread();
@@ -175,12 +175,12 @@ final class ServerProcessImpl implements ServerProcess {
         return tag;
     }
 
-    // Wagasa start
+    // Rainstom start
     @Override
     public @NotNull VanillaDamageTypeManager damageType() {
         return damageType;
     }
-    // Wagasa end
+    // Rainstom end
 
     @Override
     public @NotNull ExceptionManager exception() {

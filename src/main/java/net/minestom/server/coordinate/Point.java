@@ -38,7 +38,7 @@ public sealed interface Point permits Vec, Pos {
     @Contract(pure = true)
     double z();
 
-    // Wagasa start Kotlinからプロパティとして参照できないとムカつくのでget-のパターンを定義
+    // Rainstom start Kotlinからプロパティとして参照できないとムカつくのでget-のパターンを定義
     default double getX() {
         return x();
     }
@@ -50,7 +50,7 @@ public sealed interface Point permits Vec, Pos {
     default double getZ() {
         return z();
     }
-    // Wagasa end
+    // Rainstom end
 
     /**
      * Gets the floored value of the X component

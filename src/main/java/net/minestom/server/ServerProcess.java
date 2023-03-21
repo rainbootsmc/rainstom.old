@@ -1,6 +1,6 @@
 package net.minestom.server;
 
-import dev.uten2c.wagasa.damage.VanillaDamageTypeManager;
+import dev.uten2c.rainstom.damage.VanillaDamageTypeManager;
 import net.minestom.server.advancements.AdvancementManager;
 import net.minestom.server.adventure.bossbar.BossBarManager;
 import net.minestom.server.command.CommandManager;
@@ -110,7 +110,7 @@ public interface ServerProcess extends Snapshotable {
     /**
      * Handles registered damage type.
      */
-    @NotNull VanillaDamageTypeManager damageType(); // Wagasa 1.19.4
+    @NotNull VanillaDamageTypeManager damageType(); // Rainstom 1.19.4
 
     /**
      * Handles all thrown exceptions from the server.

@@ -1,7 +1,7 @@
 package net.minestom.server.entity;
 
-import dev.uten2c.wagasa.util.math.Quaternionf;
-import dev.uten2c.wagasa.util.math.Vec3f;
+import dev.uten2c.rainstom.util.math.Quaternionf;
+import dev.uten2c.rainstom.util.math.Vec3f;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.item.ItemStack;
@@ -101,7 +101,7 @@ public final class Metadata {
         return new MetadataImpl.EntryImpl<>(TYPE_POSE, value, NetworkBuffer.POSE);
     }
 
-    // Wagasa start
+    // Rainstom start
     public static Entry<@NotNull Integer> BlockID(int value) {
         return new MetadataImpl.EntryImpl<>(TYPE_BLOCKID, value, NetworkBuffer.BLOCK_ID);
     }
@@ -113,7 +113,7 @@ public final class Metadata {
     public static Entry<Quaternionf> Quaternionf(@NotNull Quaternionf value) {
         return new MetadataImpl.EntryImpl<>(TYPE_QUATERNION, value, NetworkBuffer.QUATERNION);
     }
-    // Wagasa end
+    // Rainstom end
 
     public static final byte TYPE_BYTE = 0;
     public static final byte TYPE_VARINT = 1;
@@ -129,15 +129,15 @@ public final class Metadata {
     public static final byte TYPE_OPTPOSITION = 11;
     public static final byte TYPE_DIRECTION = 12;
     public static final byte TYPE_OPTUUID = 13;
-    public static final byte TYPE_BLOCKID = 14; // Wagasa 1.19.4
+    public static final byte TYPE_BLOCKID = 14; // Rainstom 1.19.4
     public static final byte TYPE_OPTBLOCKID = 15;
     public static final byte TYPE_NBT = 16;
     public static final byte TYPE_PARTICLE = 17;
     public static final byte TYPE_VILLAGERDATA = 18;
     public static final byte TYPE_OPTVARINT = 19;
     public static final byte TYPE_POSE = 20;
-    public static final byte TYPE_VECTOR = 26; // Wagasa 1.19.4
-    public static final byte TYPE_QUATERNION = 27; // Wagasa 1.19.4
+    public static final byte TYPE_VECTOR = 26; // Rainstom 1.19.4
+    public static final byte TYPE_QUATERNION = 27; // Rainstom 1.19.4
 
     private static final VarHandle NOTIFIED_CHANGES;
 

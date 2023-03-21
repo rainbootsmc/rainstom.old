@@ -1,7 +1,7 @@
 package net.minestom.server.network;
 
-import dev.uten2c.wagasa.util.math.Quaternionf;
-import dev.uten2c.wagasa.util.math.Vec3f;
+import dev.uten2c.rainstom.util.math.Quaternionf;
+import dev.uten2c.rainstom.util.math.Vec3f;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Entity;
@@ -41,10 +41,10 @@ public final class NetworkBuffer {
     public static final Type<Component> COMPONENT = NetworkBufferTypes.COMPONENT;
     public static final Type<UUID> UUID = NetworkBufferTypes.UUID;
     public static final Type<ItemStack> ITEM = NetworkBufferTypes.ITEM;
-    // Wagasa start
+    // Rainstom start
     public static final Type<Vec3f> VECTOR3 = NetworkBufferTypes.VECTOR;
     public static final Type<Quaternionf> QUATERNION = NetworkBufferTypes.QUATERNION;
-    // Wagasa end
+    // Rainstom end
 
     public static final Type<byte[]> BYTE_ARRAY = NetworkBufferTypes.BYTE_ARRAY;
     public static final Type<long[]> LONG_ARRAY = NetworkBufferTypes.LONG_ARRAY;
@@ -57,7 +57,7 @@ public final class NetworkBuffer {
     public static final Type<Point> OPT_BLOCK_POSITION = NetworkBufferTypes.OPT_BLOCK_POSITION;
     public static final Type<Direction> DIRECTION = NetworkBufferTypes.DIRECTION;
     public static final Type<UUID> OPT_UUID = NetworkBufferTypes.OPT_UUID;
-    public static final Type<@NotNull Integer> BLOCK_ID = NetworkBufferTypes.BLOCK_ID; // Wagasa
+    public static final Type<@NotNull Integer> BLOCK_ID = NetworkBufferTypes.BLOCK_ID; // Rainstom
     public static final Type<Integer> OPT_BLOCK_ID = NetworkBufferTypes.OPT_BLOCK_ID;
     public static final Type<int[]> VILLAGER_DATA = NetworkBufferTypes.VILLAGER_DATA;
     public static final Type<Integer> OPT_VAR_INT = NetworkBufferTypes.OPT_VAR_INT;
@@ -216,7 +216,7 @@ public final class NetworkBuffer {
         writeFixedBitSet(bitSet, values.length);
     }
 
-    // Wagasa start readEnumSetを実装
+    // Rainstom start readEnumSetを実装
     public <E extends Enum<E>> EnumSet<E> readEnumSet(@NotNull Class<E> enumType) {
         final var values = enumType.getEnumConstants();
         final var bitSet = readFixedBitSet(values.length);
@@ -228,24 +228,24 @@ public final class NetworkBuffer {
         }
         return enumSet;
     }
-    // Wagasa end
+    // Rainstom end
 
-    public void writeFixedBitSet(BitSet set, int length) { // Wagasa private -> public
+    public void writeFixedBitSet(BitSet set, int length) { // Rainstom private -> public
         final int setLength = set.length();
         if (setLength > length) {
             throw new IllegalArgumentException("BitSet is larger than expected size (" + setLength + ">" + length + ")");
         } else {
             final byte[] array = set.toByteArray();
-            write(RAW_BYTES, Arrays.copyOf(array, -Math.floorDiv(-length, 8))); // Wagasa バニラの実装に近づける
+            write(RAW_BYTES, Arrays.copyOf(array, -Math.floorDiv(-length, 8))); // Rainstom バニラの実装に近づける
         }
     }
 
-    // Wagasa start readFixedBitSetを実装
+    // Rainstom start readFixedBitSetを実装
     public @NotNull BitSet readFixedBitSet(int size) {
         final var bytes = readBytes(-Math.floorDiv(-size, 8));
         return BitSet.valueOf(bytes);
     }
-    // Wagasa end
+    // Rainstom end
 
     public byte[] readBytes(int length) {
         byte[] bytes = new byte[length];
@@ -254,11 +254,11 @@ public final class NetworkBuffer {
         return bytes;
     }
 
-    // Wagasa start writeBitSetとreadBitSetを追加
+    // Rainstom start writeBitSetとreadBitSetを追加
     public void writeBitSet(BitSet bitSet) {
         write(LONG_ARRAY, bitSet.toLongArray());
     }
-    // Wagasa end
+    // Rainstom end
 
     public void copyTo(int srcOffset, byte @NotNull [] dest, int destOffset, int length) {
         this.nioBuffer.get(srcOffset, dest, destOffset, length);

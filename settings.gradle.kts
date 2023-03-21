@@ -4,7 +4,7 @@ enableFeaturePreview("VERSION_CATALOGS")
 dependencyResolutionManagement {
     repositories {
         maven("https://jitpack.io")
-        maven("https://maven.uten2c.dev") // Wagasa
+        maven("https://maven.uten2c.dev") // Rainstom
         mavenCentral()
     }
 }
@@ -17,7 +17,7 @@ pluginManagement {
     includeBuild("build-logic")
 }
 
-rootProject.name = "wagasa"
+rootProject.name = "rainstom"
 include("code-generators")
 include("jmh-benchmarks")
 include("jcstress-tests")

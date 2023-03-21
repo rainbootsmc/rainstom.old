@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// Wagasa
+// Rainstom
 public class DamageTypeGenerator extends MinestomCodeGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(DamageTypeGenerator.class);
     private final InputStream damageTypesFile;
@@ -49,10 +49,10 @@ public class DamageTypeGenerator extends MinestomCodeGenerator {
 
         final var fields = new ArrayList<String>();
         final var namespaceIdCN = ClassName.get("net.minestom.server.utils", "NamespaceID");
-        final var damageTypeCN = ClassName.get("dev.uten2c.wagasa.damage", "VanillaDamageType");
-        final var damageScalingCN = ClassName.get("dev.uten2c.wagasa.damage", "DamageScaling");
-        final var damageEffectsCN = ClassName.get("dev.uten2c.wagasa.damage", "DamageEffects");
-        final var deathMessageTypeCN = ClassName.get("dev.uten2c.wagasa.damage", "DeathMessageType");
+        final var damageTypeCN = ClassName.get("dev.uten2c.rainstom.damage", "VanillaDamageType");
+        final var damageScalingCN = ClassName.get("dev.uten2c.rainstom.damage", "DamageScaling");
+        final var damageEffectsCN = ClassName.get("dev.uten2c.rainstom.damage", "DamageEffects");
+        final var deathMessageTypeCN = ClassName.get("dev.uten2c.rainstom.damage", "DeathMessageType");
         for (Map.Entry<String, JsonElement> entry : damageTypes.entrySet()) {
             final var fieldName = entry.getKey().split(":")[1].toUpperCase();
             fields.add(fieldName);
@@ -110,7 +110,7 @@ public class DamageTypeGenerator extends MinestomCodeGenerator {
                 .build();
         classBuilder.addField(valuesField);
 
-        final var file = JavaFile.builder("dev.uten2c.wagasa.damage", classBuilder.build())
+        final var file = JavaFile.builder("dev.uten2c.rainstom.damage", classBuilder.build())
                 .indent("    ")
                 .skipJavaLangImports(true)
                 .build();

@@ -53,7 +53,7 @@ public class UseItemListener {
             itemAnimationType = PlayerItemAnimationEvent.ItemAnimationType.SHIELD;
         } else if (material == Material.TRIDENT) {
             itemAnimationType = PlayerItemAnimationEvent.ItemAnimationType.TRIDENT;
-        } else if (material.isFoodOrDrink()) { // Wagasa ポーション対応
+        } else if (material.isFoodOrDrink()) { // Rainstom ポーション対応
             itemAnimationType = PlayerItemAnimationEvent.ItemAnimationType.EAT;
 
             // Eating code, contains the eating time customisation

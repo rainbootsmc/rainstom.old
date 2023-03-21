@@ -1,6 +1,6 @@
 package net.minestom.server;
 
-import dev.uten2c.wagasa.damage.VanillaDamageTypeManager;
+import dev.uten2c.rainstom.damage.VanillaDamageTypeManager;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.minestom.server.advancements.AdvancementManager;
 import net.minestom.server.adventure.bossbar.BossBarManager;
@@ -46,8 +46,8 @@ public final class MinecraftServer {
 
     public static final ComponentLogger LOGGER = ComponentLogger.logger(MinecraftServer.class);
 
-    public static final String VERSION_NAME = "1.19.4"; // Wagasa
-    public static final int PROTOCOL_VERSION = 762; // Wagasa
+    public static final String VERSION_NAME = "1.19.4"; // Rainstom
+    public static final int PROTOCOL_VERSION = 762; // Rainstom
     // Threads
     public static final String THREAD_NAME_BENCHMARK = "Ms-Benchmark";
 
@@ -306,11 +306,11 @@ public final class MinecraftServer {
         return serverProcess.tag();
     }
 
-    // Wagasa start
+    // Rainstom start
     public static VanillaDamageTypeManager getVanillaDamageTypeManager() {
         return serverProcess.damageType();
     }
-    // Wagasa end
+    // Rainstom end
 
     public static Server getServer() {
         return serverProcess.server();

@@ -1,8 +1,8 @@
 package net.minestom.server.entity;
 
-import dev.uten2c.wagasa.VariablesKt;
-import dev.uten2c.wagasa.damage.VanillaDamageType;
-import dev.uten2c.wagasa.network.packet.server.play.DamageEventPacket;
+import dev.uten2c.rainstom.VariablesKt;
+import dev.uten2c.rainstom.damage.VanillaDamageType;
+import dev.uten2c.rainstom.network.packet.server.play.DamageEventPacket;
 import net.kyori.adventure.sound.Sound.Source;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.attribute.Attribute;
@@ -89,7 +89,7 @@ public class LivingEntity extends Entity implements EquipmentHandler {
     private ItemStack leggings;
     private ItemStack boots;
 
-    private float hurtDir; // Wagasa 1.19.4
+    private float hurtDir; // Rainstom 1.19.4
 
     /**
      * Constructor which allows to specify an UUID. Only use if you know what you are doing!
@@ -326,11 +326,11 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         }
     }
 
-    // Wagasa start
+    // Rainstom start
     public boolean damage(@NotNull DamageType type, float value) {
         return damage(type, value, 0f);
     }
-    // Wagasa end
+    // Rainstom end
 
     /**
      * Damages the entity by a value, the type of the damage also has to be specified.
@@ -340,7 +340,7 @@ public class LivingEntity extends Entity implements EquipmentHandler {
      * @param hurtDir ダメージを受けた方向
      * @return true if damage has been applied, false if it didn't
      */
-    public boolean damage(@NotNull DamageType type, float value, float hurtDir) { // Wagasa 1.19.4 hurtDirを追加
+    public boolean damage(@NotNull DamageType type, float value, float hurtDir) { // Rainstom 1.19.4 hurtDirを追加
         if (isDead())
             return false;
         if (isInvulnerable() || isImmune(type)) {
@@ -355,9 +355,9 @@ public class LivingEntity extends Entity implements EquipmentHandler {
             float remainingDamage = entityDamageEvent.getDamage();
 
             if (entityDamageEvent.shouldAnimate()) {
-                // Wagasa start 1.19.4
+                // Rainstom start 1.19.4
                 final var vanillaDamageType = NamespaceID.from(
-                        VariablesKt.WAGASA,
+                        VariablesKt.RAINSTOM,
                         entityDamageEvent.getDamageType().getEffects().getSerializedName()
                 );
                 final var sourceTypeId = Optional.ofNullable(MinecraftServer.getVanillaDamageTypeManager().getByName(vanillaDamageType))
@@ -366,7 +366,7 @@ public class LivingEntity extends Entity implements EquipmentHandler {
                 final var damageEventPacket = new DamageEventPacket(getEntityId(), sourceTypeId, 0, 0, null);
                 sendPacketToViewersAndSelf(damageEventPacket);
                 playHurtAnimation();
-                // Wagasa end
+                // Rainstom end
             }
 
             // Additional hearts support
@@ -489,11 +489,11 @@ public class LivingEntity extends Entity implements EquipmentHandler {
             // connection null during Player initialization (due to #super call)
             self = playerConnection != null && playerConnection.getConnectionState() == ConnectionState.PLAY;
         }
-        // Wagasa start Minestomでは新規追加されたattributeしか送っていないので直す
+        // Rainstom start Minestomでは新規追加されたattributeしか送っていないので直す
         final var list = new ArrayList<AttributeInstance>(attributeModifiers.values());
         list.add(attributeInstance);
         EntityPropertiesPacket propertiesPacket = new EntityPropertiesPacket(getEntityId(), list);
-        // Wagasa end
+        // Rainstom end
         if (self) {
             sendPacketToViewersAndSelf(propertiesPacket);
         } else {
@@ -546,14 +546,14 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         player.sendPacket(new LazyPacket(this::getPropertiesPacket));
         if (getTeam() != null) player.sendPacket(getTeam().createTeamsCreationPacket());
 
-        // Wagasa start Passengerが存在する場合は一緒に送る
+        // Rainstom start Passengerが存在する場合は一緒に送る
         if (hasPassenger()) {
             player.sendPacket(new LazyPacket(this::getPassengersPacket));
         }
         if (vehicle != null) {
             player.sendPacket(vehicle.getPassengersPacket());
         }
-        // Wagasa end
+        // Rainstom end
     }
 
     @Override
@@ -723,7 +723,7 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         super.takeKnockback(strength, x, z);
     }
 
-    // Wagasa start ダメージの向き関連
+    // Rainstom start ダメージの向き関連
     public float getHurtDir() {
         return hurtDir;
     }
@@ -749,5 +749,5 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         setHurtDir(dirX, dirZ);
         playHurtAnimation();
     }
-    // Wagasa end
+    // Rainstom end
 }

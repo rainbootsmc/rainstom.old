@@ -23,7 +23,7 @@ public class Generators {
         // Generate DyeColors
         new DyeColorGenerator(resource("dye_colors.json"), outputFolder).generate();
 
-        new DamageTypeGenerator(resource("damage_types.json"), outputFolder).generate(); // Wagasa
+        new DamageTypeGenerator(resource("damage_types.json"), outputFolder).generate(); // Rainstom
 
         var generator = new CodeGenerator(outputFolder);
         generator.generate(resource("blocks.json"), "net.minestom.server.instance.block", "Block", "BlockImpl", "Blocks");

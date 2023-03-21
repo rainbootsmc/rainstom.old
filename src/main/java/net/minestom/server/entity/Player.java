@@ -1,11 +1,11 @@
 package net.minestom.server.entity;
 
-import dev.uten2c.wagasa.event.player.PlayerDrinkEvent;
-import dev.uten2c.wagasa.inventory.InventoryListener;
-import dev.uten2c.wagasa.item.drop.DropAmount;
-import dev.uten2c.wagasa.item.drop.DropType;
-import dev.uten2c.wagasa.network.packet.server.play.BundleDelimiterPacket;
-import dev.uten2c.wagasa.network.packet.server.play.HurtAnimationPacket;
+import dev.uten2c.rainstom.event.player.PlayerDrinkEvent;
+import dev.uten2c.rainstom.inventory.InventoryListener;
+import dev.uten2c.rainstom.item.drop.DropAmount;
+import dev.uten2c.rainstom.item.drop.DropType;
+import dev.uten2c.rainstom.network.packet.server.play.BundleDelimiterPacket;
+import dev.uten2c.rainstom.network.packet.server.play.HurtAnimationPacket;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
@@ -172,7 +172,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     private int food;
     private float foodSaturation;
     private long startEatingTime;
-    private long defaultEatingTime = 1600L; // Wagasa バニラに合わせる 1000 -> 1600
+    private long defaultEatingTime = 1600L; // Rainstom バニラに合わせる 1000 -> 1600
     private long eatingTime;
     private Hand eatingHand;
 
@@ -384,12 +384,12 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
                     PlayerEatEvent playerEatEvent = new PlayerEatEvent(this, foodItem, eatingHand);
                     EventDispatcher.call(playerEatEvent);
                 }
-                // Wagasa start ポーション対応
+                // Rainstom start ポーション対応
                 else if (foodItem.material().isDrink()) {
                     final var playerDrinkEvent = new PlayerDrinkEvent(this, foodItem, eatingHand);
                     EventDispatcher.call(playerDrinkEvent);
                 }
-                // Wagasa end
+                // Rainstom end
 
                 refreshEating(null);
             }
@@ -707,7 +707,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPluginMessage(channel, message.getBytes(StandardCharsets.UTF_8));
     }
 
-    // Wagasa 非推奨のsendMessageを削除
+    // Rainstom 非推奨のsendMessageを削除
 
     @Override
     public void playSound(@NotNull Sound sound) {
@@ -1059,9 +1059,9 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
      * @param amount 一つだけドロップするかすべてドロップするか
      * @return true if player can drop the item (event not cancelled), false otherwise
      */
-    public boolean dropItem(@NotNull ItemStack item, @NotNull DropType type, @NotNull DropAmount amount) { // Wagasa DropTypeとDropAmountを追加
+    public boolean dropItem(@NotNull ItemStack item, @NotNull DropType type, @NotNull DropAmount amount) { // Rainstom DropTypeとDropAmountを追加
         if (item.isAir()) return false;
-        ItemDropEvent itemDropEvent = new ItemDropEvent(this, item, type, amount); // Wagasa DropTypeとDropAmountを追加
+        ItemDropEvent itemDropEvent = new ItemDropEvent(this, item, type, amount); // Rainstom DropTypeとDropAmountを追加
         EventDispatcher.call(itemDropEvent);
         return !itemDropEvent.isCancelled();
     }
@@ -1151,14 +1151,14 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPacketsToViewers(getEntityType().registry().spawnType().getSpawnPacket(this));
 
         // Update for viewers
-        // Wagasa start バンドルパケットで送る
+        // Rainstom start バンドルパケットで送る
         sendBundledPacketsToViewersAndSelf(List.of(
                 getVelocityPacket(),
                 getMetadataPacket(),
                 getPropertiesPacket(),
                 getEquipmentsPacket()
         ));
-        // Wagasa end
+        // Rainstom end
 
         getInventory().update();
     }
@@ -1215,13 +1215,13 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPacket(new SetExperiencePacket(exp, level, 0));
     }
 
-    // Wagasa start
+    // Rainstom start
     public void setExpAndLevel(float exp, int level) {
         this.exp = exp;
         this.level = level;
         sendPacket(new SetExperiencePacket(exp, level, 0));
     }
-    // Wagasa end
+    // Rainstom end
 
     /**
      * Gets the player connection.
@@ -1254,7 +1254,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         this.playerConnection.sendPackets(packets);
     }
 
-    // Wagasa start バンドルパケットで送れるようにする
+    // Rainstom start バンドルパケットで送れるようにする
     public void sendBundledPackets(@NotNull SendablePacket... packets) {
         sendBundledPackets(List.of(packets));
     }
@@ -1264,7 +1264,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPackets(packets);
         sendPacket(new BundleDelimiterPacket());
     }
-    // Wagasa end
+    // Rainstom end
 
     /**
      * Gets if the player is online or not.
@@ -1484,11 +1484,11 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
             newInventory.addViewer(this);
             this.openInventory = newInventory;
 
-            // Wagasa start InventoryListenerのonOpenを呼び出す
+            // Rainstom start InventoryListenerのonOpenを呼び出す
             if (newInventory instanceof InventoryListener inventoryListener) {
                 inventoryListener.onOpen(this);
             }
-            // Wagasa end
+            // Rainstom end
         });
         return !inventoryOpenEvent.isCancelled();
     }
@@ -1511,7 +1511,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         }
         if (!cursorItem.isAir()) {
             // Add item to inventory if he hasn't been able to drop it
-            if (!dropItem(cursorItem, new DropType.InventoryClose(openInventory == null ? getInventory() : openInventory), DropAmount.STACK)) { // Wagasa DropTypeとDropAmountを追加
+            if (!dropItem(cursorItem, new DropType.InventoryClose(openInventory == null ? getInventory() : openInventory), DropAmount.STACK)) { // Rainstom DropTypeとDropAmountを追加
                 getInventory().addItemStack(cursorItem);
             }
         }
@@ -1577,7 +1577,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     @ApiStatus.Internal
     protected void synchronizePosition(boolean includeSelf) {
         if (includeSelf) {
-            sendPacket(new PlayerPositionAndLookPacket(position, (byte) 0x00, getNextTeleportId())); // Wagasa 1.19.4 dismountVehicleを削除
+            sendPacket(new PlayerPositionAndLookPacket(position, (byte) 0x00, getNextTeleportId())); // Rainstom 1.19.4 dismountVehicleを削除
         }
         super.synchronizePosition(includeSelf);
     }
@@ -1907,9 +1907,9 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
             return null;
 
         final ItemStack updatedItem = getItemInHand(hand);
-        final boolean isFoodOrDrink = updatedItem.material().isFoodOrDrink(); // Wagasa ポーション対応
+        final boolean isFoodOrDrink = updatedItem.material().isFoodOrDrink(); // Rainstom ポーション対応
 
-        if (isFoodOrDrink && !allowFood) // Wagasa ポーション対応
+        if (isFoodOrDrink && !allowFood) // Rainstom ポーション対応
             return null;
 
         ItemUpdateStateEvent itemUpdateStateEvent = new ItemUpdateStateEvent(this, hand, updatedItem);
@@ -1984,7 +1984,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
      * @param connection the connection to show the player to
      */
     protected void showPlayer(@NotNull PlayerConnection connection) {
-        // Wagasa start バンドルパケットで送る
+        // Rainstom start バンドルパケットで送る
         final var packets = new ArrayList<SendablePacket>();
         packets.add(getEntityType().registry().spawnType().getSpawnPacket(this));
         packets.add(getVelocityPacket());
@@ -1999,7 +1999,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         }
         packets.add(new EntityHeadLookPacket(getEntityId(), position.yaw()));
         sendBundledPackets(packets);
-        // Wagasa end
+        // Rainstom end
     }
 
     @Override
@@ -2259,10 +2259,10 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
 
     }
 
-    // Wagasa start ダメージの向き関連
+    // Rainstom start ダメージの向き関連
     @Override
     public void playHurtAnimation() {
         sendPacket(new HurtAnimationPacket(getEntityId(), getHurtDir()));
     }
-    // Wagasa end
+    // Rainstom end
 }

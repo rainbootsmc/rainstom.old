@@ -25,7 +25,7 @@ public class EchoCommand extends Command {
         }, json);
 
         this.addSyntax((sender, context) -> {
-            sender.sendMessage(Identity.identity(context.get(uuid)), context.get(json)); // Wagasa
+            sender.sendMessage(Identity.identity(context.get(uuid)), context.get(json)); // Rainstom
         }, uuid, json);
     }
 }

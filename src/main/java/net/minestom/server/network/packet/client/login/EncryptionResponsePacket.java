@@ -92,14 +92,14 @@ public record EncryptionResponsePacket(byte[] sharedSecret,
 
                     MinecraftServer.LOGGER.info("UUID of player {} is {}", loginUsername, profileUUID);
                     CONNECTION_MANAGER.startPlayState(connection, profileUUID, profileName, true);
-                    // Wagasa start MojangAuthを使用している場合はGameProfileを設定する
+                    // Rainstom start MojangAuthを使用している場合はGameProfileを設定する
                     final var properties = new ArrayList<GameProfile.Property>();
                     for (JsonElement element : gameProfile.get("properties").getAsJsonArray()) {
                         final var object = element.getAsJsonObject();
                         properties.add(new GameProfile.Property(object.get("name").getAsString(), object.get("value").getAsString(), object.get("signature").getAsString()));
                     }
                     socketConnection.UNSAFE_setProfile(new GameProfile(profileUUID, profileName, properties));
-                    // Wagasa end
+                    // Rainstom end
                 } catch (Exception e) {
                     MinecraftServer.getExceptionManager().handleException(e);
                 }

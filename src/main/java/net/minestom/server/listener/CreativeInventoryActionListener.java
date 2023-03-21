@@ -1,7 +1,7 @@
 package net.minestom.server.listener;
 
-import dev.uten2c.wagasa.item.drop.DropAmount;
-import dev.uten2c.wagasa.item.drop.DropType;
+import dev.uten2c.rainstom.item.drop.DropAmount;
+import dev.uten2c.rainstom.item.drop.DropType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.item.ItemStack;
@@ -17,7 +17,7 @@ public final class CreativeInventoryActionListener {
         final ItemStack item = packet.item();
         if (slot == -1) {
             // Drop item
-            player.dropItem(item, new DropType.Inventory(player.getInventory()), DropAmount.STACK); // Wagasa DropTypeとDropAmountを追加
+            player.dropItem(item, new DropType.Inventory(player.getInventory()), DropAmount.STACK); // Rainstom DropTypeとDropAmountを追加
             return;
         }
         // Set item

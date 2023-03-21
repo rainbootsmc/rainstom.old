@@ -1,7 +1,7 @@
 package net.minestom.server.network;
 
-import dev.uten2c.wagasa.util.math.Quaternionf;
-import dev.uten2c.wagasa.util.math.Vec3f;
+import dev.uten2c.rainstom.util.math.Quaternionf;
+import dev.uten2c.rainstom.util.math.Vec3f;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minestom.server.coordinate.Point;
@@ -507,7 +507,7 @@ final class NetworkBufferTypes {
                 final int ordinal = buffer.read(VAR_INT);
                 return Entity.Pose.values()[ordinal];
             });
-    // Wagasa start
+    // Rainstom start
     static final TypeImpl<@NotNull Integer> BLOCK_ID = new TypeImpl<>(Integer.class,
             (buffer, value) -> {
                 buffer.write(VAR_INT, value);
@@ -531,7 +531,7 @@ final class NetworkBufferTypes {
                 return -1;
             },
             buffer -> new Quaternionf(buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT)));
-    // Wagasa end
+    // Rainstom end
 
     record TypeImpl<T>(@NotNull Class<T> type,
                        @NotNull TypeWriter<T> writer,

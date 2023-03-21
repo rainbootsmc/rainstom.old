@@ -25,7 +25,7 @@ public enum InventoryType {
     LOOM(4),
     MERCHANT(3),
     SHULKER_BOX(27),
-    LEGACY_SMITHING(3), // Wagasa 1.19.4
+    LEGACY_SMITHING(3), // Rainstom 1.19.4
     SMITHING(3),
     SMOKER(3),
     CARTOGRAPHY(3),

@@ -14,7 +14,7 @@ import static net.minestom.server.network.NetworkBuffer.VAR_INT;
 
 public record EntityAnimationPacket(int entityId, @NotNull Animation animation) implements ServerPacket {
     public EntityAnimationPacket(@NotNull NetworkBuffer reader) {
-        this(reader.read(VAR_INT), Objects.requireNonNull(Animation.getById(reader.read(BYTE)))); // Wagasa 1.19.4
+        this(reader.read(VAR_INT), Objects.requireNonNull(Animation.getById(reader.read(BYTE)))); // Rainstom 1.19.4
     }
 
     @Override
@@ -28,7 +28,7 @@ public record EntityAnimationPacket(int entityId, @NotNull Animation animation) 
         return ServerPacketIdentifier.ENTITY_ANIMATION;
     }
 
-    // Wagasa start 1.19.4 TAKE_DAMAGEがなくなった関係で飛び番が発生したので対応
+    // Rainstom start 1.19.4 TAKE_DAMAGEがなくなった関係で飛び番が発生したので対応
     public enum Animation {
         SWING_MAIN_ARM(0),
         LEAVE_BED(2),
@@ -46,5 +46,5 @@ public record EntityAnimationPacket(int entityId, @NotNull Animation animation) 
             return Arrays.stream(values()).filter(anim -> anim.id == id).findFirst().orElse(null);
         }
     }
-    // Wagasa end
+    // Rainstom end
 }

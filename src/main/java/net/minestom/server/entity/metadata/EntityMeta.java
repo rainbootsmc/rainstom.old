@@ -1,6 +1,6 @@
 package net.minestom.server.entity.metadata;
 
-import dev.uten2c.wagasa.entity.metadata.MetadataValue;
+import dev.uten2c.rainstom.entity.metadata.MetadataValue;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.Metadata;
@@ -193,9 +193,9 @@ public class EntityMeta {
         }
     }
 
-    // Wagasa start
+    // Rainstom start
     protected final <T extends Metadata.Entry<E>, E> MetadataValue<T, E> metadataValue(int id, E defaultValue, Function<E, T> factory) {
         return new MetadataValue<>(metadata, id, defaultValue, factory);
     }
-    // Wagasa end
+    // Rainstom end
 }

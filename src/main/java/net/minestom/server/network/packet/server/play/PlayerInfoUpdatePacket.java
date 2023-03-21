@@ -14,7 +14,7 @@ import java.util.*;
 
 import static net.minestom.server.network.NetworkBuffer.*;
 
-// Wagasa start recordからclassに変更
+// Rainstom start recordからclassに変更
 public final class PlayerInfoUpdatePacket implements ServerPacket {
     private final @NotNull EnumSet<@NotNull Action> actions;
     private final @NotNull List<@NotNull Entry> entries;
@@ -161,4 +161,4 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
         }
     }
 }
-// Wagasa end
+// Rainstom end

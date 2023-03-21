@@ -1,10 +1,10 @@
 package net.minestom.server.network;
 
 import com.google.gson.JsonObject;
-import dev.uten2c.wagasa.network.packet.server.play.BundleDelimiterPacket;
-import dev.uten2c.wagasa.network.packet.server.play.ChunksBiomesPacket;
-import dev.uten2c.wagasa.network.packet.server.play.DamageEventPacket;
-import dev.uten2c.wagasa.network.packet.server.play.HurtAnimationPacket;
+import dev.uten2c.rainstom.network.packet.server.play.BundleDelimiterPacket;
+import dev.uten2c.rainstom.network.packet.server.play.ChunksBiomesPacket;
+import dev.uten2c.rainstom.network.packet.server.play.DamageEventPacket;
+import dev.uten2c.rainstom.network.packet.server.play.HurtAnimationPacket;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Vec;
@@ -102,7 +102,7 @@ public class PacketWriteReadTest {
         SERVER_PACKETS.add(new EffectPacket(5, VEC, 5, false));
         SERVER_PACKETS.add(new EndCombatEventPacket(5, 5));
         SERVER_PACKETS.add(new EnterCombatEventPacket());
-        SERVER_PACKETS.add(new EntityAnimationPacket(5, EntityAnimationPacket.Animation.SWING_MAIN_ARM)); // Wagasa
+        SERVER_PACKETS.add(new EntityAnimationPacket(5, EntityAnimationPacket.Animation.SWING_MAIN_ARM)); // Rainstom
         SERVER_PACKETS.add(new EntityEquipmentPacket(6, Map.of(EquipmentSlot.MAIN_HAND, ItemStack.of(Material.DIAMOND_SWORD))));
         SERVER_PACKETS.add(new EntityHeadLookPacket(5, 90f));
         SERVER_PACKETS.add(new EntityMetaDataPacket(5, Map.of()));
@@ -111,19 +111,19 @@ public class PacketWriteReadTest {
         SERVER_PACKETS.add(new EntityPositionPacket(5, (short) 0, (short) 0, (short) 0, true));
         SERVER_PACKETS.add(new EntityPropertiesPacket(5, List.of()));
         SERVER_PACKETS.add(new EntityRotationPacket(5, 45f, 45f, false));
-        // Wagasa start 1.19.4
+        // Rainstom start 1.19.4
         SERVER_PACKETS.add(new BundleDelimiterPacket());
         SERVER_PACKETS.add(new ChunksBiomesPacket(Collections.emptyList()));
         SERVER_PACKETS.add(new DamageEventPacket(5, 0, 0, 0, null));
         SERVER_PACKETS.add(new HurtAnimationPacket(5, 0f));
-        // Wagasa end
+        // Rainstom end
 
         final PlayerSkin skin = new PlayerSkin("hh", "hh");
         List<PlayerInfoUpdatePacket.Property> prop = List.of(new PlayerInfoUpdatePacket.Property("textures", skin.textures(), skin.signature()));
         var entry =  new PlayerInfoUpdatePacket.Entry(UUID.randomUUID(), "TheMode911", prop,
                 true, 5, GameMode.CREATIVE, Component.text("display"), null);
 
-        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(EnumSet.allOf(PlayerInfoUpdatePacket.Action.class), Collections.singletonList(entry))); // Wagasa TODO もっと細かくテストする
+        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(EnumSet.allOf(PlayerInfoUpdatePacket.Action.class), Collections.singletonList(entry))); // Rainstom TODO もっと細かくテストする
         SERVER_PACKETS.add(new PlayerInfoRemovePacket(UUID.randomUUID()));
 
         //SERVER_PACKETS.add(new MultiBlockChangePacket(5,5,5,true, new long[]{0,5,543534,1321}));

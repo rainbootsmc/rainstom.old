@@ -1,7 +1,7 @@
 package net.minestom.server.event.item;
 
-import dev.uten2c.wagasa.item.drop.DropAmount;
-import dev.uten2c.wagasa.item.drop.DropType;
+import dev.uten2c.rainstom.item.drop.DropAmount;
+import dev.uten2c.rainstom.item.drop.DropType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.trait.CancellableEvent;
 import net.minestom.server.event.trait.ItemEvent;
@@ -9,7 +9,7 @@ import net.minestom.server.event.trait.PlayerInstanceEvent;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-// Wagasa start DropTypeとDropAmountを追加
+// Rainstom start DropTypeとDropAmountを追加
 public class ItemDropEvent implements PlayerInstanceEvent, ItemEvent, CancellableEvent {
 
     private final Player player;
@@ -55,4 +55,4 @@ public class ItemDropEvent implements PlayerInstanceEvent, ItemEvent, Cancellabl
     }
 
 }
-// Wagasa end
+// Rainstom end

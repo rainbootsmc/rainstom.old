@@ -59,7 +59,7 @@ tasks {
         replaceToken("\"&ARTIFACT\"", if (artifact == null) "null" else "\"${artifact}\"", git)
     }
 
-    // Wagasa start
+    // Rainstom start
     withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "17"
@@ -68,7 +68,7 @@ tasks {
                     "-Xjvm-default=all"
         }
     }
-    // Wagasa end
+    // Rainstom end
 }
 
 dependencies {

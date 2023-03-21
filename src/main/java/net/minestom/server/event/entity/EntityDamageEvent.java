@@ -19,17 +19,17 @@ public class EntityDamageEvent implements EntityInstanceEvent, CancellableEvent 
     private float damage;
     private SoundEvent sound;
     private boolean animation = true;
-    private float hurtDir; // Wagasa 1.19.4ダメージを受けた方向
+    private float hurtDir; // Rainstom 1.19.4ダメージを受けた方向
 
     private boolean cancelled;
 
     public EntityDamageEvent(@NotNull LivingEntity entity, @NotNull DamageType damageType,
-                             float damage, @Nullable SoundEvent sound, float hurtDir) { // Wagasa 1.19.4ダメージを受けた方向
+                             float damage, @Nullable SoundEvent sound, float hurtDir) { // Rainstom 1.19.4ダメージを受けた方向
         this.entity = entity;
         this.damageType = damageType;
         this.damage = damage;
         this.sound = sound;
-        this.hurtDir = hurtDir; // Wagasa 1.19.4ダメージを受けた方向
+        this.hurtDir = hurtDir; // Rainstom 1.19.4ダメージを受けた方向
     }
 
     @NotNull
@@ -131,4 +131,4 @@ public class EntityDamageEvent implements EntityInstanceEvent, CancellableEvent 
         this.cancelled = cancel;
     }
 }
-// Wagasa end
+// Rainstom end

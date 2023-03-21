@@ -1,7 +1,7 @@
 package net.minestom.server.listener;
 
-import dev.uten2c.wagasa.item.drop.DropAmount;
-import dev.uten2c.wagasa.item.drop.DropType;
+import dev.uten2c.rainstom.item.drop.DropAmount;
+import dev.uten2c.rainstom.item.drop.DropType;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.GameMode;
@@ -110,7 +110,7 @@ public final class PlayerDiggingListener {
 
     private static void dropStack(Player player) {
         final ItemStack droppedItemStack = player.getInventory().getItemInMainHand();
-        dropItem(player, droppedItemStack, ItemStack.AIR, DropAmount.STACK); // Wagasa DropAmountを追加
+        dropItem(player, droppedItemStack, ItemStack.AIR, DropAmount.STACK); // Rainstom DropAmountを追加
     }
 
     private static void dropSingle(Player player) {
@@ -119,13 +119,13 @@ public final class PlayerDiggingListener {
         final int handAmount = stackingRule.getAmount(handItem);
         if (handAmount <= 1) {
             // Drop the whole item without copy
-            dropItem(player, handItem, ItemStack.AIR, DropAmount.SINGLE); // Wagasa DropAmountを追加
+            dropItem(player, handItem, ItemStack.AIR, DropAmount.SINGLE); // Rainstom DropAmountを追加
         } else {
             // Drop a single item
             dropItem(player,
                     stackingRule.apply(handItem, 1), // Single dropped item
                     stackingRule.apply(handItem, handAmount - 1), // Updated hand
-                    DropAmount.SINGLE // Wagasa DropAmountを追加
+                    DropAmount.SINGLE // Rainstom DropAmountを追加
             );
         }
     }
@@ -136,7 +136,7 @@ public final class PlayerDiggingListener {
         Player.Hand hand = meta.getActiveHand();
 
         player.refreshEating(null);
-        // player.triggerStatus((byte) 9); // Wagasa Minestomのバグ? ここで送ると食事を完了してなくても完了したときのパケットが送られる
+        // player.triggerStatus((byte) 9); // Rainstom Minestomのバグ? ここで送ると食事を完了してなくても完了したときのパケットが送られる
 
         ItemUpdateStateEvent itemUpdateStateEvent = player.callItemUpdateStateEvent(hand);
         if (itemUpdateStateEvent == null) {
@@ -177,9 +177,9 @@ public final class PlayerDiggingListener {
     }
 
     private static void dropItem(@NotNull Player player,
-                                 @NotNull ItemStack droppedItem, @NotNull ItemStack handItem, @NotNull DropAmount amount) { // Wagasa DropAmountを追加
+                                 @NotNull ItemStack droppedItem, @NotNull ItemStack handItem, @NotNull DropAmount amount) { // Rainstom DropAmountを追加
         final PlayerInventory playerInventory = player.getInventory();
-        if (player.dropItem(droppedItem, new DropType.HotBar(Player.Hand.MAIN, player.getHeldSlot()), amount)) { // Wagasa DropTypeとDropAmountを追加
+        if (player.dropItem(droppedItem, new DropType.HotBar(Player.Hand.MAIN, player.getHeldSlot()), amount)) { // Rainstom DropTypeとDropAmountを追加
             playerInventory.setItemInMainHand(handItem);
         } else {
             playerInventory.update();

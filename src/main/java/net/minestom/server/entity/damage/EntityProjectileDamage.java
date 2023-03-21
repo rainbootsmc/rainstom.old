@@ -1,6 +1,6 @@
 package net.minestom.server.entity.damage;
 
-import dev.uten2c.wagasa.damage.DamageEffects;
+import dev.uten2c.rainstom.damage.DamageEffects;
 import net.minestom.server.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +14,7 @@ public class EntityProjectileDamage extends DamageType {
     private final Entity projectile;
 
     public EntityProjectileDamage(@Nullable Entity shooter, @NotNull Entity projectile) {
-        super("projectile_source", DamageEffects.HURT); // Wagasa DamageEffectsを追加
+        super("projectile_source", DamageEffects.HURT); // Rainstom DamageEffectsを追加
         this.shooter = shooter;
         this.projectile = projectile;
     }

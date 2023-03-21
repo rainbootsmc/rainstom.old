@@ -11,7 +11,7 @@ public final class ServerPacketIdentifier {
     public static final int LOGIN_SET_COMPRESSION = 0x03;
     public static final int LOGIN_PLUGIN_REQUEST = 0x04;
 
-    // Wagasa 変更箇所が広範囲なので省略
+    // Rainstom 変更箇所が広範囲なので省略
     public static final int BUNDLE_DELIMITER = nextPlayId();
     public static final int SPAWN_ENTITY = nextPlayId();
     public static final int SPAWN_EXPERIENCE_ORB = nextPlayId();

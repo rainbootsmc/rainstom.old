@@ -1,6 +1,6 @@
 package net.minestom.server;
 
-import dev.uten2c.wagasa.network.packet.server.play.BundleDelimiterPacket;
+import dev.uten2c.rainstom.network.packet.server.play.BundleDelimiterPacket;
 import net.kyori.adventure.audience.Audience;
 import net.minestom.server.adventure.audience.PacketGroupingAudience;
 import net.minestom.server.entity.Player;
@@ -86,7 +86,7 @@ public interface Viewable {
         sendPacketToViewers(packet);
     }
 
-    // Wagasa start バンドルパケットで送れるようにする
+    // Rainstom start バンドルパケットで送れるようにする
     default void sendBundledPacketsToViewers(@NotNull Collection<SendablePacket> packets) {
         sendPacketsToViewers(new BundleDelimiterPacket());
         sendPacketsToViewers(packets);
@@ -102,7 +102,7 @@ public interface Viewable {
         packets.forEach(this::sendPacketToViewersAndSelf);
         sendPacketToViewersAndSelf(new BundleDelimiterPacket());
     }
-    // Wagasa end
+    // Rainstom end
 
     /**
      * Gets the result of {@link #getViewers()} as an Adventure Audience.

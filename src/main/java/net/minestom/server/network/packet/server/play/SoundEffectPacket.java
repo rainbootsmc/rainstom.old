@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static net.minestom.server.network.NetworkBuffer.*;
 
-// Wagasa start 1.19.3対応と再生される座標の小数点が丸められるバグを修正
+// Rainstom start 1.19.3対応と再生される座標の小数点が丸められるバグを修正
 public record SoundEffectPacket(int soundId, @Nullable Key customSoundId, @Nullable Float staticDistanceToTravel,
                                 @NotNull Source source,
                                 int packetX, int packetY, int packetZ,
@@ -72,4 +72,4 @@ public record SoundEffectPacket(int soundId, @Nullable Key customSoundId, @Nulla
         return ServerPacketIdentifier.SOUND_EFFECT;
     }
 }
-// Wagasa end
+// Rainstom end

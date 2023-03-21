@@ -26,7 +26,7 @@ import java.util.Random;
  */
 public class AdventurePacketConvertor {
     private static final Object2IntMap<NamedTextColor> NAMED_TEXT_COLOR_ID_MAP = new Object2IntArrayMap<>(16);
-    private static final Random SOUND_SEED_RANDOM = new Random(); // Wagasa SoundEffectPacket用のランダム
+    private static final Random SOUND_SEED_RANDOM = new Random(); // Rainstom SoundEffectPacket用のランダム
 
     static {
         NAMED_TEXT_COLOR_ID_MAP.put(NamedTextColor.BLACK, 0);
@@ -112,15 +112,15 @@ public class AdventurePacketConvertor {
      */
     public static @NotNull ServerPacket createSoundPacket(@NotNull Sound sound, double x, double y, double z) {
         final SoundEvent minestomSound = SoundEvent.fromNamespaceId(sound.name().asString());
-        // Wagasa start 1.19.3に合わせる
+        // Rainstom start 1.19.3に合わせる
         if (minestomSound == null) {
             return new SoundEffectPacket(sound.name(), null, sound.source(),
-                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Wagasa seedをランダムにする
+                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
         } else {
             return new SoundEffectPacket(minestomSound.id(), sound.source(),
-                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Wagasa seedをランダムにする
+                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
         }
-        // Wagasa end
+        // Rainstom end
     }
 
     /**
@@ -142,10 +142,10 @@ public class AdventurePacketConvertor {
             return new EntitySoundEffectPacket(minestomSound.id(), sound.source(), entity.getEntityId(), sound.volume(), sound.pitch(), 0);
         } else {
             final Pos pos = entity.getPosition();
-            // Wagasa start 1.19.3に合わせる
+            // Rainstom start 1.19.3に合わせる
             return new SoundEffectPacket(sound.name(), null, sound.source(),
-                    pos.x(), pos.y(), pos.z(), sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Wagasa seedをランダムにする
-            // Wagasa end
+                    pos.x(), pos.y(), pos.z(), sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
+            // Rainstom end
         }
     }
 
