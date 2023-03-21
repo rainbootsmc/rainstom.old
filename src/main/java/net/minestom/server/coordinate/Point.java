@@ -6,6 +6,7 @@ import net.minestom.server.utils.chunk.ChunkUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.DoubleUnaryOperator;
 
@@ -152,6 +153,17 @@ public sealed interface Point permits Vec, Pos {
     @Contract(pure = true)
     @NotNull Point withZ(double z);
 
+    // Rainstom start Add系のメソッドを追加
+    @Contract(pure = true)
+    @NotNull Point addX(double x);
+
+    @Contract(pure = true)
+    @NotNull Point addY(double y);
+
+    @Contract(pure = true)
+    @NotNull Point addZ(double z);
+    // Rainstom end
+
     @Contract(pure = true)
     @NotNull Point add(double x, double y, double z);
 
@@ -246,9 +258,14 @@ public sealed interface Point permits Vec, Pos {
      * @param point the point to compare
      * @return true if the two positions are similar
      */
-    default boolean samePoint(@NotNull Point point) {
+    // Rainstom start Nullを許容する
+    default boolean samePoint(@Nullable Point point) {
+        if (point == null) {
+            return false;
+        }
         return samePoint(point.x(), point.y(), point.z());
     }
+    // Rainstom end
 
     /**
      * Gets if the three coordinates {@link #x()}, {@link #y()} and {@link #z()}
@@ -283,4 +300,11 @@ public sealed interface Point permits Vec, Pos {
     default boolean sameBlock(@NotNull Point point) {
         return sameBlock(point.blockX(), point.blockY(), point.blockZ());
     }
+
+    // Rainstom start
+    @Contract(pure = true)
+    default Point toBlockPos() {
+        return new Vec(blockX(), blockY(), blockZ());
+    }
+    // Rainstom end
 }

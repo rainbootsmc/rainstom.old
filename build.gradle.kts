@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.blossom)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.atomicfu)
+    alias(libs.plugins.serialization)
 }
 
 allprojects {

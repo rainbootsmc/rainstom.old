@@ -1426,6 +1426,16 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
         return getPose() == Pose.SLEEPING ? 0.2 : (boundingBox.height() * 0.85);
     }
 
+    // Rainstom start getEyePositionを追加
+    /**
+     * エンティティの目の位置を取得する
+     * @return 現在の目の位置
+     */
+    public @NotNull Pos getEyePosition() {
+        return position.addY(getEyeHeight());
+    }
+    // Rainstom end
+
     /**
      * Gets all the potion effect of this entity.
      *

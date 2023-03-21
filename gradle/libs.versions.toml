@@ -7,6 +7,8 @@ adventure = "4.12.0"
 kotlin = "1.8.10"
 kotlinx-datetime = "0.4.0"
 kotlinx-atomicfu = "0.19.0"
+kotlinx-serialization = "1.5.0"
+kotlinx-coroutines = "1.6.4"
 hydrazine = "1.7.2"
 dependencyGetter = "v1.0.1"
 minestomData = "1.19.4+build.1"
@@ -59,6 +61,9 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", vers
 kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "kotlinx-atomicfu" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-jdk8 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-jdk8", version.ref = "kotlinx-coroutines" }
 
 # Miscellaneous
 hydrazine = { group = "com.github.MadMartian", name = "hydrazine-path-finding", version.ref = "hydrazine" }
@@ -106,7 +111,15 @@ jcstress-core = { group = "org.openjdk.jcstress", name = "jcstress-core", versio
 
 [bundles]
 
-kotlin = ["kotlin-stdlib-jdk8", "kotlin-reflect", "kotlinx-datetime", "kotlinx-atomicfu"]
+kotlin = [
+    "kotlin-stdlib-jdk8",
+    "kotlin-reflect",
+    "kotlinx-datetime",
+    "kotlinx-atomicfu",
+    "kotlinx-serialization-json",
+    "kotlinx-coroutines-core",
+    "kotlinx-coroutines-jdk8",
+]
 flare = ["flare", "flare-fastutil"]
 adventure = ["adventure-api", "adventure-serializer-gson", "adventure-serializer-legacy", "adventure-serializer-plain", "adventure-text-logger-slf4j"]
 logging = ["tinylog-api", "tinylog-impl", "tinylog-slf4j"]
@@ -117,3 +130,4 @@ terminal = ["jline", "jline-jansi"]
 blossom = { id = "net.kyori.blossom", version.ref = "blossom" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 atomicfu = { id = "org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

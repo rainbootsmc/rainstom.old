@@ -1,8 +1,12 @@
 package net.minestom.server.entity;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.uten2c.rainstom.util.skin.DecodedTextures;
+import dev.uten2c.rainstom.util.skin.SkinTexturesDecoder;
 import net.minestom.server.utils.mojang.MojangUtils;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +19,11 @@ import org.jetbrains.annotations.Nullable;
  * or in the linked event {@link net.minestom.server.event.player.PlayerSkinInitEvent}.
  */
 public record PlayerSkin(String textures, String signature) {
+    // Rainstom start
+    private static final Cache<PlayerSkin, DecodedTextures> decodedTexturesCache = Caffeine.newBuilder()
+            .weakKeys()
+            .build();
+    // Rainstom end
 
     /**
      * Gets a skin from a Mojang UUID.
@@ -76,4 +85,18 @@ public record PlayerSkin(String textures, String signature) {
     public String getSignature() {
         return signature;
     }
+
+    // Rainstom start
+    public DecodedTextures decodedTextures() {
+        return decodedTexturesCache.get(this, SkinTexturesDecoder::decode);
+    }
+
+    public boolean slimModel() {
+        return decodedTextures().isSlimModel();
+    }
+
+    public @NotNull String url() {
+        return decodedTextures().getUrl();
+    }
+    // Rainstom end
 }
