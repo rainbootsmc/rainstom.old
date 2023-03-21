@@ -9,6 +9,6 @@ enum class DamageScaling(val serializedName: String) {
     companion object {
         @JvmStatic
         fun fromSerializedName(serializedName: String): DamageScaling? =
-                values().find { it.serializedName == serializedName }
+            values().find { it.serializedName == serializedName }
     }
 }

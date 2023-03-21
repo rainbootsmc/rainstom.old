@@ -14,6 +14,6 @@ enum class DamageEffects(val serializedName: String, val playerSound: SoundEvent
     companion object {
         @JvmStatic
         fun fromSerializedName(serializedName: String): DamageEffects? =
-                values().find { it.serializedName == serializedName }
+            values().find { it.serializedName == serializedName }
     }
 }
