@@ -2,6 +2,7 @@ package net.minestom.server.registry;
 
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.stream.JsonReader;
+import dev.uten2c.rainstom.block.SoundType;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.collision.CollisionUtils;
@@ -174,6 +175,7 @@ public final class Registry {
         private final int blockEntityId;
         private final Supplier<Material> materialSupplier;
         private final Shape shape;
+        private final SoundType soundType; // Rainstom SoundTypeを追加
         private final Properties custom;
 
         private BlockEntry(String namespace, Properties main, Properties custom) {
@@ -208,6 +210,7 @@ public final class Registry {
                 final String string = main.getString("collisionShape");
                 this.shape = CollisionUtils.parseBlockShape(string, this);
             }
+            this.soundType = SoundType.valueOf(main.getString("soundType")); // Rainstom SoundTypeを追加
         }
 
         public @NotNull NamespaceID namespace() {
@@ -277,6 +280,12 @@ public final class Registry {
         public Shape collisionShape() {
             return shape;
         }
+
+        // Rainstom start SoundTypeを追加
+        public @NotNull SoundType soundType() {
+            return soundType;
+        }
+        // Rainstom end
 
         @Override
         public Properties custom() {
