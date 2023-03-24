@@ -3,8 +3,10 @@ package net.minestom.server.entity;
 import dev.uten2c.rainstom.VariablesKt;
 import dev.uten2c.rainstom.damage.VanillaDamageType;
 import dev.uten2c.rainstom.network.packet.server.play.DamageEventPacket;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.AdventurePacketConvertor;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.attribute.AttributeInstance;
 import net.minestom.server.collision.BoundingBox;
@@ -26,7 +28,6 @@ import net.minestom.server.network.packet.server.LazyPacket;
 import net.minestom.server.network.packet.server.play.CollectItemPacket;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
 import net.minestom.server.network.packet.server.play.EntityPropertiesPacket;
-import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.scoreboard.Team;
 import net.minestom.server.sound.SoundEvent;
@@ -396,8 +397,11 @@ public class LivingEntity extends Entity implements EquipmentHandler {
                     // TODO: separate living entity categories
                     soundCategory = Source.HOSTILE;
                 }
-                sendPacketToViewersAndSelf(new SoundEffectPacket(sound, soundCategory,
-                        getPosition(), 1.0f, 1.0f));
+                // Rainstom start ダメージ音をランダム化
+                final var advSound = Sound.sound(sound, soundCategory, 1f, 1f);
+                final var soundPacket = AdventurePacketConvertor.createSoundPacket(advSound, position);
+                sendPacketToViewersAndSelf(soundPacket);
+                // Rainstom end
             }
         });
 

@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.network.packet.server.ServerPacket;
@@ -148,6 +149,12 @@ public class AdventurePacketConvertor {
             // Rainstom end
         }
     }
+
+    // Rainstom start Pointを引数として使えるようにする
+    public static @NotNull ServerPacket createSoundPacket(@NotNull Sound sound, @NotNull Point point) {
+        return createSoundPacket(sound, point.x(), point.y(), point.z());
+    }
+    // Rainstom end
 
     /**
      * Creates an entity sound packet from an Adventure sound.
