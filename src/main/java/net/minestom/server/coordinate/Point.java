@@ -268,8 +268,8 @@ public sealed interface Point permits Vec, Pos {
     // Rainstom end
 
     /**
-     * Gets if the three coordinates {@link #x()}, {@link #y()} and {@link #z()}
-     * are equals to {@code 0}.
+     * Checks if the three coordinates {@link #x()}, {@link #y()} and {@link #z()}
+     * are equal to {@code 0}.
      *
      * @return true if the three coordinates are zero
      */
@@ -278,9 +278,9 @@ public sealed interface Point permits Vec, Pos {
     }
 
     /**
-     * Gets if two points are in the same chunk.
+     * Checks if two points are in the same chunk.
      *
-     * @param point the point to compare two
+     * @param point the point to compare to
      * @return true if 'this' is in the same chunk as {@code point}
      */
     default boolean sameChunk(@NotNull Point point) {
@@ -292,10 +292,10 @@ public sealed interface Point permits Vec, Pos {
     }
 
     /**
-     * Gets if two points are in the same chunk.
+     * Checks if two points are in the same block.
      *
-     * @param point the point to compare two
-     * @return true if 'this' is in the same chunk as {@code point}
+     * @param point the point to compare to
+     * @return true if 'this' is in the same block as {@code point}
      */
     default boolean sameBlock(@NotNull Point point) {
         return sameBlock(point.blockX(), point.blockY(), point.blockZ());
