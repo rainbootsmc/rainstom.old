@@ -128,6 +128,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
 
     private DimensionType dimensionType;
     private GameMode gameMode;
+    private DeathLocation deathLocation;
     /**
      * Keeps track of what chunks are sent to the client, this defines the center of the loaded area
      * in the range of {@link MinecraftServer#getChunkViewDistance()}
@@ -257,9 +258,6 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
                 "minecraft:worldgen/biome", MinecraftServer.getBiomeManager().toNBT(),
                 "minecraft:damage_type", MinecraftServer.getVanillaDamageTypeManager().toNBT()
         ));
-
-        // TODO: Add some way to determine last death location
-        final DeathLocation deathLocation = null;
 
         final JoinGamePacket joinGamePacket = new JoinGamePacket(getEntityId(), false, gameMode, null,
                 List.of(dimensionType.getName().asString()), nbt, dimensionType.toString(), dimensionType.getName().asString(),
@@ -445,6 +443,10 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
             if (chatMessage != null) {
                 Audiences.players().sendMessage(chatMessage);
             }
+
+            // Set death location
+            if (getInstance() != null)
+                setDeathLocation(getInstance().getDimensionType(), getPosition());
         }
         super.kill();
     }
@@ -461,8 +463,6 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         setOnFire(false);
         refreshHealth();
 
-        // TODO: Add some way to determine last death location
-        final DeathLocation deathLocation = null;
         sendPacket(new RespawnPacket(getDimensionType().toString(), getDimensionType().getName().asString(),
                0, gameMode, gameMode, false, levelFlat, true, deathLocation));
 
@@ -987,8 +987,6 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         final PlayerInfoRemovePacket removePlayerPacket = getRemovePlayerToList();
         final PlayerInfoUpdatePacket addPlayerPacket = getAddPlayerToList();
 
-        // TODO: Add some way to determine last death location
-        final DeathLocation deathLocation = null;
         RespawnPacket respawnPacket = new RespawnPacket(getDimensionType().toString(), getDimensionType().getName().asString(),
                 0, gameMode, gameMode, false, levelFlat, true, deathLocation);
 
@@ -1010,6 +1008,14 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
 
         getInventory().update();
         teleport(getPosition());
+    }
+
+    public void setDeathLocation(@NotNull DimensionType type, @NotNull Pos position) {
+        this.deathLocation = new DeathLocation(type.getName().asString(), position);
+    }
+
+    public @Nullable DeathLocation getDeathLocation() {
+        return this.deathLocation;
     }
 
     /**
@@ -1387,8 +1393,6 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         Check.argCondition(dimensionType.equals(getDimensionType()),
                 "The dimension needs to be different than the current one!");
         this.dimensionType = dimensionType;
-        // TODO: Add some way to determine last death location
-        final DeathLocation deathLocation = null;
         sendPacket(new RespawnPacket(dimensionType.toString(), getDimensionType().getName().asString(),
                 0, gameMode, gameMode, false, levelFlat, true, deathLocation));
         refreshClientStateAfterRespawn();
