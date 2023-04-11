@@ -4,30 +4,30 @@ metadata.format.version = "1.1"
 
 # Important dependencies
 adventure = "4.12.0"
-kotlin = "1.8.10"
+kotlin = "1.8.20"
 kotlinx-datetime = "0.4.0"
-kotlinx-atomicfu = "0.19.0"
+kotlinx-atomicfu = "0.20.2"
 kotlinx-serialization = "1.5.0"
 kotlinx-coroutines = "1.6.4"
 hydrazine = "1.7.2"
 dependencyGetter = "v1.0.1"
 minestomData = "1.19.4+build.1"
 hephaistos = "2.5.3"
-jetbrainsAnnotations = "23.0.0"
+jetbrainsAnnotations = "24.0.1"
 
 # Terminal / Logging
 tinylog = "2.5.0"
 jline = "3.21.0"
 
 # Performance / Data Structures
-caffeine = "3.1.2"
-fastutil = "8.5.9"
+caffeine = "3.1.6"
+fastutil = "8.5.12"
 flare = "2.0.1"
-gson = "2.9.1"
+gson = "2.10.1"
 jcTools = "4.0.1"
 
 # Test
-junit-jupiter = "5.8.2"
+junit-jupiter = "5.9.2"
 junit-platform = "1.8.2"
 mockito = "4.2.0"
 
