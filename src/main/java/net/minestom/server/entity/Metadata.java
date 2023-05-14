@@ -4,6 +4,8 @@ import dev.uten2c.rainstom.util.math.Quaternionf;
 import dev.uten2c.rainstom.util.math.Vec3f;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.entity.metadata.animal.FrogMeta;
+import net.minestom.server.entity.metadata.animal.tameable.CatMeta;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.NetworkBuffer;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
@@ -115,6 +117,14 @@ public final class Metadata {
     }
     // Rainstom end
 
+    public static Entry<CatMeta.Variant> CatVariant(@NotNull CatMeta.Variant value) {
+        return new MetadataImpl.EntryImpl<>(TYPE_CAT_VARIANT, value, NetworkBuffer.CAT_VARIANT);
+    }
+
+    public static Entry<FrogMeta.Variant> FrogVariant(@NotNull FrogMeta.Variant value) {
+        return new MetadataImpl.EntryImpl<>(TYPE_FROG_VARIANT, value, NetworkBuffer.FROG_VARIANT);
+    }
+
     public static final byte TYPE_BYTE = 0;
     public static final byte TYPE_VARINT = 1;
     public static final byte TYPE_LONG = 2;
@@ -136,6 +146,8 @@ public final class Metadata {
     public static final byte TYPE_VILLAGERDATA = 18;
     public static final byte TYPE_OPTVARINT = 19;
     public static final byte TYPE_POSE = 20;
+    public static final byte TYPE_CAT_VARIANT = 21;
+    public static final byte TYPE_FROG_VARIANT = 22;
     public static final byte TYPE_VECTOR = 26; // Rainstom 1.19.4
     public static final byte TYPE_QUATERNION = 27; // Rainstom 1.19.4
 

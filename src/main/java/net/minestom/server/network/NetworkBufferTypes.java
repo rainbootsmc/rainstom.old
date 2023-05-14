@@ -7,6 +7,8 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
+import net.minestom.server.entity.metadata.animal.FrogMeta;
+import net.minestom.server.entity.metadata.animal.tameable.CatMeta;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.play.data.DeathLocation;
@@ -550,6 +552,24 @@ final class NetworkBufferTypes {
             },
             buffer -> new Quaternionf(buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT)));
     // Rainstom end
+    static final TypeImpl<CatMeta.Variant> CAT_VARIANT = new TypeImpl<>(CatMeta.Variant.class,
+            (buffer, value) -> {
+                buffer.write(VAR_INT, value.ordinal());
+                return -1;
+            },
+            buffer -> {
+                final int ordinal = buffer.read(VAR_INT);
+                return CatMeta.Variant.values()[ordinal];
+            });
+    static final TypeImpl<FrogMeta.Variant> FROG_VARIANT = new TypeImpl<>(FrogMeta.Variant.class,
+            (buffer, value) -> {
+                buffer.write(VAR_INT, value.ordinal());
+                return -1;
+            },
+            buffer -> {
+                final int ordinal = buffer.read(VAR_INT);
+                return FrogMeta.Variant.values()[ordinal];
+            });
 
     record TypeImpl<T>(@NotNull Class<T> type,
                        @NotNull TypeWriter<T> writer,
