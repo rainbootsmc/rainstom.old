@@ -102,7 +102,7 @@ public class PacketWriteReadTest {
         SERVER_PACKETS.add(new EffectPacket(5, VEC, 5, false));
         SERVER_PACKETS.add(new EndCombatEventPacket(5, 5));
         SERVER_PACKETS.add(new EnterCombatEventPacket());
-        SERVER_PACKETS.add(new EntityAnimationPacket(5, EntityAnimationPacket.Animation.SWING_MAIN_ARM)); // Rainstom
+        SERVER_PACKETS.add(new EntityAnimationPacket(5, EntityAnimationPacket.Animation.SWING_MAIN_ARM)); // Rainstom 1.19.4
         SERVER_PACKETS.add(new EntityEquipmentPacket(6, Map.of(EquipmentSlot.MAIN_HAND, ItemStack.of(Material.DIAMOND_SWORD))));
         SERVER_PACKETS.add(new EntityHeadLookPacket(5, 90f));
         SERVER_PACKETS.add(new EntityMetaDataPacket(5, Map.of()));
@@ -120,13 +120,18 @@ public class PacketWriteReadTest {
 
         final PlayerSkin skin = new PlayerSkin("hh", "hh");
         List<PlayerInfoUpdatePacket.Property> prop = List.of(new PlayerInfoUpdatePacket.Property("textures", skin.textures(), skin.signature()));
-        var entry =  new PlayerInfoUpdatePacket.Entry(UUID.randomUUID(), "TheMode911", prop,
-                true, 5, GameMode.CREATIVE, Component.text("display"), null);
 
-        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(EnumSet.allOf(PlayerInfoUpdatePacket.Action.class), Collections.singletonList(entry))); // Rainstom TODO もっと細かくテストする
+        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.ADD_PLAYER,
+                new PlayerInfoUpdatePacket.Entry(UUID.randomUUID(), "TheMode911", prop, false, 0, GameMode.SURVIVAL, null, null)));
+        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME,
+                new PlayerInfoUpdatePacket.Entry(UUID.randomUUID(), "", List.of(), false, 0, GameMode.SURVIVAL, Component.text("NotTheMode911"), null)));
+        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE,
+                new PlayerInfoUpdatePacket.Entry(UUID.randomUUID(), "", List.of(), false, 0, GameMode.CREATIVE, null, null)));
+        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.UPDATE_LATENCY,
+                new PlayerInfoUpdatePacket.Entry(UUID.randomUUID(), "", List.of(), false, 20, GameMode.SURVIVAL, null, null)));
+        SERVER_PACKETS.add(new PlayerInfoUpdatePacket(PlayerInfoUpdatePacket.Action.UPDATE_LISTED,
+                new PlayerInfoUpdatePacket.Entry(UUID.randomUUID(), "", List.of(), true, 0, GameMode.SURVIVAL, null, null)));
         SERVER_PACKETS.add(new PlayerInfoRemovePacket(UUID.randomUUID()));
-
-        //SERVER_PACKETS.add(new MultiBlockChangePacket(5,5,5,true, new long[]{0,5,543534,1321}));
     }
 
     @BeforeAll
@@ -148,7 +153,6 @@ public class PacketWriteReadTest {
         try {
             byte[] bytes = NetworkBuffer.makeArray(buffer -> buffer.write(writeable));
             var readerConstructor = writeable.getClass().getConstructor(NetworkBuffer.class);
-
             NetworkBuffer reader = new NetworkBuffer();
             reader.write(NetworkBuffer.RAW_BYTES, bytes);
             var createdPacket = readerConstructor.newInstance(reader);

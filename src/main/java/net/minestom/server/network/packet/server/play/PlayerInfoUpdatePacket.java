@@ -14,7 +14,6 @@ import java.util.*;
 
 import static net.minestom.server.network.NetworkBuffer.*;
 
-// Rainstom start recordからclassに変更
 public final class PlayerInfoUpdatePacket implements ServerPacket {
     private final @NotNull EnumSet<@NotNull Action> actions;
     private final @NotNull List<@NotNull Entry> entries;
@@ -25,41 +24,32 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
     }
 
     public PlayerInfoUpdatePacket(@NotNull Action action, @NotNull Entry entry) {
-        this(EnumSet.of(action), List.of(entry));
+        this.actions = EnumSet.of(action);
+        this.entries = List.of(entry);
     }
 
     public PlayerInfoUpdatePacket(@NotNull NetworkBuffer reader) {
         this.actions = reader.readEnumSet(Action.class);
-        this.entries = reader.readCollection(buf -> {
-            final var uuid = buf.read(UUID);
-            String username = null;
-            List<Property> properties = Collections.emptyList();
+        this.entries = reader.readCollection(buffer -> {
+            UUID uuid = buffer.read(NetworkBuffer.UUID);
+            String username = "";
+            List<Property> properties = List.of();
             boolean listed = false;
             int latency = 0;
             GameMode gameMode = GameMode.SURVIVAL;
             Component displayName = null;
             ChatSession chatSession = null;
-            for (Action action : this.actions) {
+            for (Action action : actions) {
                 switch (action) {
                     case ADD_PLAYER -> {
                         username = reader.read(STRING);
                         properties = reader.readCollection(Property::new);
                     }
-                    case INITIALIZE_CHAT -> {
-                        chatSession = reader.readOptional(ChatSession::new);
-                    }
-                    case UPDATE_GAME_MODE -> {
-                        gameMode = reader.readEnum(GameMode.class);
-                    }
-                    case UPDATE_LISTED -> {
-                        listed = reader.read(BOOLEAN);
-                    }
-                    case UPDATE_LATENCY -> {
-                        latency = reader.read(VAR_INT);
-                    }
-                    case UPDATE_DISPLAY_NAME -> {
-                        displayName = reader.readOptional(COMPONENT);
-                    }
+                    case INITIALIZE_CHAT -> chatSession = reader.readOptional(ChatSession::new); // Rainstom 1.19.4
+                    case UPDATE_GAME_MODE -> gameMode = reader.readEnum(GameMode.class);
+                    case UPDATE_LISTED -> listed = reader.read(BOOLEAN);
+                    case UPDATE_LATENCY -> latency = reader.read(VAR_INT);
+                    case UPDATE_DISPLAY_NAME -> displayName = reader.readOptional(COMPONENT);
                 }
             }
             return new Entry(uuid, username, properties, listed, latency, gameMode, displayName, chatSession);
@@ -70,7 +60,7 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
     public void write(@NotNull NetworkBuffer writer) {
         writer.writeEnumSet(actions, Action.class);
         writer.writeCollection(entries, (buffer, entry) -> {
-            buffer.write(UUID, entry.uuid);
+            buffer.write(NetworkBuffer.UUID, entry.uuid);
             for (Action action : actions) {
                 action.writer.write(buffer, entry);
             }
@@ -82,21 +72,20 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
         return ServerPacketIdentifier.PLAYER_INFO_UPDATE;
     }
 
-    public @NotNull EnumSet<@NotNull Action> actions() {
+    public @NotNull EnumSet<Action> actions() {
         return actions;
     }
 
-    public @NotNull List<@NotNull Entry> entries() {
+    public @NotNull List<Entry> entries() {
         return entries;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (PlayerInfoUpdatePacket) obj;
-        return Objects.equals(this.actions, that.actions) &&
-                Objects.equals(this.entries, that.entries);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerInfoUpdatePacket that = (PlayerInfoUpdatePacket) o;
+        return actions.equals(that.actions) && entries.equals(that.entries);
     }
 
     @Override
@@ -106,11 +95,11 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
 
     @Override
     public String toString() {
-        return "PlayerInfoUpdatePacket[" +
-                "actions=" + actions + ", " +
-                "entries=" + entries + ']';
+        return "PlayerInfoUpdatePacket{" +
+                "actions=" + actions +
+                ", entries=" + entries +
+                '}';
     }
-
 
     public record Entry(UUID uuid, String username, List<Property> properties,
                         boolean listed, int latency, GameMode gameMode,
@@ -121,7 +110,7 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
     }
 
     public record Property(@NotNull String name, @NotNull String value,
-                           @Nullable String signature) implements Writer {
+                           @Nullable String signature) implements NetworkBuffer.Writer {
         public Property(@NotNull String name, @NotNull String value) {
             this(name, value, null);
         }
@@ -161,4 +150,3 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
         }
     }
 }
-// Rainstom end

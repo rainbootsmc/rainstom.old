@@ -12,6 +12,7 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.network.packet.server.ServerPacket;
 import net.minestom.server.network.packet.server.play.*;
@@ -113,15 +114,13 @@ public class AdventurePacketConvertor {
      */
     public static @NotNull ServerPacket createSoundPacket(@NotNull Sound sound, double x, double y, double z) {
         final SoundEvent minestomSound = SoundEvent.fromNamespaceId(sound.name().asString());
-        // Rainstom start 1.19.3に合わせる
         if (minestomSound == null) {
-            return new SoundEffectPacket(sound.name(), null, sound.source(),
-                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
+            return new SoundEffectPacket(sound.name().asString(), null, sound.source(),
+                    new Vec(x, y, z), sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong());// Rainstom seedをランダムにする
         } else {
-            return new SoundEffectPacket(minestomSound.id(), sound.source(),
-                    x, y, z, sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
+            return new SoundEffectPacket(minestomSound, null, sound.source(),
+                    new Vec(x, y, z), sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
         }
-        // Rainstom end
     }
 
     /**
@@ -140,13 +139,9 @@ public class AdventurePacketConvertor {
         final SoundEvent minestomSound = SoundEvent.fromNamespaceId(sound.name().asString());
 
         if (minestomSound != null) {
-            return new EntitySoundEffectPacket(minestomSound.id(), sound.source(), entity.getEntityId(), sound.volume(), sound.pitch(), 0);
+            return new EntitySoundEffectPacket(minestomSound, null, sound.source(), entity.getEntityId(), sound.volume(), sound.pitch(), 0);
         } else {
-            final Pos pos = entity.getPosition();
-            // Rainstom start 1.19.3に合わせる
-            return new SoundEffectPacket(sound.name(), null, sound.source(),
-                    pos.x(), pos.y(), pos.z(), sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
-            // Rainstom end
+            return new EntitySoundEffectPacket(sound.name().asString(), null, sound.source(), entity.getEntityId(), sound.volume(), sound.pitch(), SOUND_SEED_RANDOM.nextLong()); // Rainstom seedをランダムにする
         }
     }
 

@@ -2,6 +2,14 @@ package net.minestom.server.network;
 
 import dev.uten2c.rainstom.util.math.Quaternionf;
 import dev.uten2c.rainstom.util.math.Vec3f;
+import java.util.BitSet;
+import java.util.Collection;
+
+import java.util.EnumSet;
+import java.util.List;
+
+import java.util.UUID;
+
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Entity;
@@ -222,36 +230,33 @@ public final class NetworkBuffer {
         writeFixedBitSet(bitSet, values.length);
     }
 
-    // Rainstom start readEnumSetを実装
-    public <E extends Enum<E>> EnumSet<E> readEnumSet(@NotNull Class<E> enumType) {
-        final var values = enumType.getEnumConstants();
-        final var bitSet = readFixedBitSet(values.length);
-        final var enumSet = EnumSet.noneOf(enumType);
-        for (int i = 0; i < values.length; i++) {
+    public <E extends Enum<E>> @NotNull EnumSet<E> readEnumSet(Class<E> enumType) {
+        final E[] values = enumType.getEnumConstants();
+        BitSet bitSet = readFixedBitSet(values.length);
+        EnumSet<E> enumSet = EnumSet.noneOf(enumType);
+        for (int i = 0; i < values.length; ++i) {
             if (bitSet.get(i)) {
                 enumSet.add(values[i]);
             }
         }
         return enumSet;
     }
-    // Rainstom end
 
-    public void writeFixedBitSet(BitSet set, int length) { // Rainstom private -> public
+    public void writeFixedBitSet(BitSet set, int length) {
         final int setLength = set.length();
         if (setLength > length) {
             throw new IllegalArgumentException("BitSet is larger than expected size (" + setLength + ">" + length + ")");
         } else {
             final byte[] array = set.toByteArray();
-            write(RAW_BYTES, Arrays.copyOf(array, -Math.floorDiv(-length, 8))); // Rainstom バニラの実装に近づける
+            write(RAW_BYTES, array);
         }
     }
 
-    // Rainstom start readFixedBitSetを実装
-    public @NotNull BitSet readFixedBitSet(int size) {
-        final var bytes = readBytes(-Math.floorDiv(-size, 8));
-        return BitSet.valueOf(bytes);
+    @NotNull
+    public BitSet readFixedBitSet(int length) {
+        final byte[] array = readBytes((length + 7) / 8);
+        return BitSet.valueOf(array);
     }
-    // Rainstom end
 
     public byte[] readBytes(int length) {
         byte[] bytes = new byte[length];
