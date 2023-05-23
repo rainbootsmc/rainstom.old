@@ -4,14 +4,14 @@ metadata.format.version = "1.1"
 
 # Important dependencies
 adventure = "4.12.0"
-kotlin = "1.8.20"
+kotlin = "1.8.21"
 kotlinx-datetime = "0.4.0"
 kotlinx-atomicfu = "0.20.2"
-kotlinx-serialization = "1.5.0"
-kotlinx-coroutines = "1.6.4"
+kotlinx-serialization = "1.5.1"
+kotlinx-coroutines = "1.7.1"
 hydrazine = "1.7.2"
 dependencyGetter = "v1.0.1"
-minestomData = "1.19.4+build.1"
+minestomData = "1.19.4+build.6"
 hephaistos = "2.5.3"
 jetbrainsAnnotations = "24.0.1"
 
