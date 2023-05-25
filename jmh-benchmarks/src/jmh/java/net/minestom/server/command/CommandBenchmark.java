@@ -28,8 +28,8 @@ public class CommandBenchmark {
     public void setup() {
         var graph = Graph.merge(Set.of(
                 new Command("tp", "teleport") {{
-                    addSyntax((sender, context) -> {}, Potion("pos"));
-                    addSyntax((sender, context) -> {}, Entity("entity"), Potion("pos"));
+                    addSyntax((sender, context) -> {}, RelativeVec3("pos")); // Rainstom MinestomでなぜかPotionになってた
+                    addSyntax((sender, context) -> {}, Entity("entity"), RelativeVec3("pos")); // Rainstom MinestomでなぜかPotionになってた
                 }},
                 new Command("setblock", "set") {{
                     addSyntax((sender, context) -> {}, RelativeBlockPosition("pos"), BlockState("block"));
