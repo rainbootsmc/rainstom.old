@@ -299,7 +299,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
 
         //Teams
         for (Team team : MinecraftServer.getTeamManager().getTeams()) {
-            sendPacket(team.createTeamsCreationPacket());
+            MinecraftServer.getTeamManager().sendTeamCreationPacket(this, team); // Rainstom チームの重複登録を防ぐ
         }
 
         // Commands
@@ -1462,7 +1462,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     public void setTeam(Team team) {
         super.setTeam(team);
         if (team != null) {
-            PacketUtils.broadcastPacket(team.createTeamsCreationPacket());
+            MinecraftServer.getTeamManager().broadcastTeamCreationPacket(team); // Rainstom チームの重複登録を防ぐ
         }
     }
 
@@ -2026,11 +2026,12 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
             packets.add(getPassengersPacket());
         }
         // Team
-        if (this.getTeam() != null) {
+        if (this.getTeam() != null && MinecraftServer.getTeamManager().shouldSendTeamCreationPacket(this, this.getTeam())) { // Rainstom チームの重複登録を防ぐ
             packets.add(this.getTeam().createTeamsCreationPacket());
         }
         packets.add(new EntityHeadLookPacket(getEntityId(), position.yaw()));
         sendBundledPackets(packets);
+        MinecraftServer.getTeamManager().addTeamCreationHistory(this, this.getTeam()); // Rainstom チームの重複登録を防ぐ
         // Rainstom end
     }
 

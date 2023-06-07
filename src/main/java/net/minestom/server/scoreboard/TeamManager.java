@@ -2,6 +2,7 @@ package net.minestom.server.scoreboard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.Player;
 import net.minestom.server.utils.PacketUtils;
@@ -10,13 +11,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * An object which manages all the {@link Team}'s
  */
 public final class TeamManager {
+    private final Map<Player, Set<Team>> teamCreationHistory = new ConcurrentHashMap<>(); // Rainstom チームの重複登録を防ぐ
 
     /**
      * Represents all registered teams
@@ -37,7 +41,7 @@ public final class TeamManager {
      */
     protected void registerNewTeam(@NotNull Team team) {
         this.teams.add(team);
-        PacketUtils.broadcastPacket(team.createTeamsCreationPacket());
+        broadcastTeamCreationPacket(team); // Rainstom チームの重複登録を防ぐ
     }
 
     /**
@@ -191,4 +195,43 @@ public final class TeamManager {
     public Set<Team> getTeams() {
         return this.teams;
     }
+
+    // Rainstom start チームの重複登録を防ぐ
+    public boolean addTeamCreationHistory(@NotNull Player player, @NotNull Team team) {
+        if (!shouldSendTeamCreationPacket(player, team)) {
+            return false;
+        }
+        final var set = teamCreationHistory.get(player);
+        if (set == null) {
+            final var mutSet = ConcurrentHashMap.<Team>newKeySet();
+            mutSet.add(team);
+            teamCreationHistory.put(player, mutSet);
+        } else {
+            set.add(team);
+        }
+        return true;
+    }
+
+    public boolean sendTeamCreationPacket(@NotNull Player player, @NotNull Team team) {
+        if (addTeamCreationHistory(player, team)) {
+            player.sendPacket(team.createTeamsCreationPacket());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean shouldSendTeamCreationPacket(@NotNull Player player, @NotNull Team team) {
+        final var list = teamCreationHistory.get(player);
+        if (list == null) {
+            return true;
+        } else {
+            return !list.contains(team);
+        }
+    }
+
+    public void broadcastTeamCreationPacket(@NotNull Team team) {
+        MinecraftServer.getConnectionManager().getOnlinePlayers()
+                .forEach(player -> sendTeamCreationPacket(player, team));
+    }
+    // Rainstom end
 }

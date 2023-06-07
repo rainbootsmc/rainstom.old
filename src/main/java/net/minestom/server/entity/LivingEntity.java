@@ -548,7 +548,11 @@ public class LivingEntity extends Entity implements EquipmentHandler {
         super.updateNewViewer(player);
         player.sendPacket(new LazyPacket(this::getEquipmentsPacket));
         player.sendPacket(new LazyPacket(this::getPropertiesPacket));
-        if (getTeam() != null) player.sendPacket(getTeam().createTeamsCreationPacket());
+        // Rainstom start チームの重複登録を防ぐ
+        if (getTeam() != null) {
+            MinecraftServer.getTeamManager().sendTeamCreationPacket(player, this.getTeam());
+        }
+        // Rainstom end
 
         // Rainstom start Passengerが存在する場合は一緒に送る
         if (hasPassenger()) {
