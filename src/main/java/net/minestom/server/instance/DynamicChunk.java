@@ -242,8 +242,7 @@ public class DynamicChunk extends Chunk {
                 emptyBlockMask.set(index);
             }
         }
-        return new LightData(true,
-                skyMask, blockMask,
+        return new LightData(skyMask, blockMask, // Rainstom 1.20 trustEdgesを削除
                 emptySkyMask, emptyBlockMask,
                 skyLights, blockLights);
     }

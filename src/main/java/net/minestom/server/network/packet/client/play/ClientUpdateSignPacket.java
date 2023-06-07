@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static net.minestom.server.network.NetworkBuffer.BLOCK_POSITION;
-import static net.minestom.server.network.NetworkBuffer.STRING;
+import static net.minestom.server.network.NetworkBuffer.*;
 
 public record ClientUpdateSignPacket(@NotNull Point blockPosition,
+                                     boolean isFrontText, // Rainstom 1.20 isFrontTextを追加
                                      @NotNull List<String> lines) implements ClientPacket {
     public ClientUpdateSignPacket {
         lines = List.copyOf(lines);
@@ -25,12 +25,13 @@ public record ClientUpdateSignPacket(@NotNull Point blockPosition,
     }
 
     public ClientUpdateSignPacket(@NotNull NetworkBuffer reader) {
-        this(reader.read(BLOCK_POSITION), readLines(reader));
+        this(reader.read(BLOCK_POSITION), reader.read(BOOLEAN), readLines(reader)); // Rainstom 1.20 isFrontTextを追加
     }
 
     @Override
     public void write(@NotNull NetworkBuffer writer) {
         writer.write(BLOCK_POSITION, blockPosition);
+        writer.write(BOOLEAN, isFrontText); // Rainstom 1.20 isFrontTextを追加
         writer.write(STRING, lines.get(0));
         writer.write(STRING, lines.get(1));
         writer.write(STRING, lines.get(2));

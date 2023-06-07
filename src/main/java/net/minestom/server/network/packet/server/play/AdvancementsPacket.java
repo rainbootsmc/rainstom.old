@@ -100,7 +100,13 @@ public record AdvancementsPacket(boolean reset, @NotNull List<AdvancementMapping
 
     public record Advancement(@Nullable String parentIdentifier, @Nullable DisplayData displayData,
                               @NotNull List<String> criteria,
-                              @NotNull List<Requirement> requirements) implements NetworkBuffer.Writer, ComponentHolder<Advancement> {
+                              @NotNull List<Requirement> requirements, boolean sendTelemetryData) implements NetworkBuffer.Writer, ComponentHolder<Advancement> { // Rainstom 1.20 sendTelemetryDataを追加
+        // Rainstom start 1.20 sendTelemetryDataを追加
+        public Advancement(@Nullable String parentIdentifier, @Nullable DisplayData displayData, @NotNull List<String> criteria, @NotNull List<Requirement> requirements) {
+            this(parentIdentifier, displayData, criteria, requirements, false);
+        }
+        // Rainstom end
+
         public Advancement {
             criteria = List.copyOf(criteria);
             requirements = List.copyOf(requirements);

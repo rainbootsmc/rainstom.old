@@ -12,11 +12,11 @@ import static net.minestom.server.network.NetworkBuffer.*;
 public record RespawnPacket(String dimensionType, String worldName,
                             long hashedSeed, GameMode gameMode, GameMode previousGameMode,
                             boolean isDebug, boolean isFlat, boolean copyMeta,
-                            DeathLocation deathLocation) implements ServerPacket {
+                            DeathLocation deathLocation, int portalCooldown) implements ServerPacket { // Rainstom 1.20 portalCooldownを追加
     public RespawnPacket(@NotNull NetworkBuffer reader) {
         this(reader.read(STRING), reader.read(STRING),
                 reader.read(LONG), GameMode.fromId(reader.read(BYTE)), GameMode.fromId(reader.read(BYTE)),
-                reader.read(BOOLEAN), reader.read(BOOLEAN), reader.read(BOOLEAN), reader.read(DEATH_LOCATION));
+                reader.read(BOOLEAN), reader.read(BOOLEAN), reader.read(BOOLEAN), reader.read(DEATH_LOCATION), reader.read(VAR_INT)); // Rainstom 1.20 portalCooldownを追加
     }
 
     @Override
@@ -30,6 +30,7 @@ public record RespawnPacket(String dimensionType, String worldName,
         writer.write(BOOLEAN, isFlat);
         writer.write(BOOLEAN, copyMeta);
         writer.write(DEATH_LOCATION, deathLocation);
+        writer.write(VAR_INT, portalCooldown); // Rainstom 1.20 portalCooldownを追加
     }
 
     @Override

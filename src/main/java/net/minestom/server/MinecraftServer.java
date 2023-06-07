@@ -46,8 +46,8 @@ public final class MinecraftServer {
 
     public static final ComponentLogger LOGGER = ComponentLogger.logger(MinecraftServer.class);
 
-    public static final String VERSION_NAME = "1.19.4"; // Rainstom
-    public static final int PROTOCOL_VERSION = 762; // Rainstom
+    public static final String VERSION_NAME = "1.20"; // Rainstom 1.20
+    public static final int PROTOCOL_VERSION = 763; // Rainstom 1.20
     // Threads
     public static final String THREAD_NAME_BENCHMARK = "Ms-Benchmark";
 
