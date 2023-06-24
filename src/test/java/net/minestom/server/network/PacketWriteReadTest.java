@@ -5,6 +5,7 @@ import dev.uten2c.rainstom.network.packet.server.play.BundleDelimiterPacket;
 import dev.uten2c.rainstom.network.packet.server.play.ChunksBiomesPacket;
 import dev.uten2c.rainstom.network.packet.server.play.DamageEventPacket;
 import dev.uten2c.rainstom.network.packet.server.play.HurtAnimationPacket;
+import dev.uten2c.rainstom.recipe.CraftingRecipeCategory;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Vec;
@@ -83,6 +84,7 @@ public class PacketWriteReadTest {
                 List.of(new DeclareRecipesPacket.DeclaredShapelessCraftingRecipe(
                                 "minecraft:sticks",
                                 "sticks",
+                                CraftingRecipeCategory.BUILDING, // Rainstom categoryを追加
                                 List.of(new Ingredient(List.of(ItemStack.of(Material.OAK_PLANKS)))),
                                 ItemStack.of(Material.STICK)
                         ),
@@ -91,6 +93,7 @@ public class PacketWriteReadTest {
                                 1,
                                 2,
                                 "",
+                                CraftingRecipeCategory.BUILDING, // Rainstom categoryを追加
                                 List.of(new Ingredient(List.of(ItemStack.of(Material.COAL))),
                                         new Ingredient(List.of(ItemStack.of(Material.STICK)))),
                                 ItemStack.of(Material.TORCH)
