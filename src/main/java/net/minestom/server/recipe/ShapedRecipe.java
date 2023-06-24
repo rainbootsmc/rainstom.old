@@ -1,5 +1,6 @@
 package net.minestom.server.recipe;
 
+import dev.uten2c.rainstom.recipe.CraftingRecipeCategory;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.packet.server.play.DeclareRecipesPacket;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ public abstract class ShapedRecipe extends Recipe {
     private final int width;
     private final int height;
     private String group;
+    private @NotNull CraftingRecipeCategory category; // Rainstom categoryを追加
     private final List<DeclareRecipesPacket.Ingredient> ingredients;
     private ItemStack result;
 
@@ -20,12 +22,14 @@ public abstract class ShapedRecipe extends Recipe {
                            int width,
                            int height,
                            @NotNull String group,
+                           @NotNull CraftingRecipeCategory category, // Rainstom categoryを追加
                            @Nullable List<DeclareRecipesPacket.Ingredient> ingredients,
                            @NotNull ItemStack result) {
         super(Type.SHAPED, recipeId);
         this.width = width;
         this.height = height;
         this.group = group;
+        this.category = category; // Rainstom categoryを追加
         this.ingredients = Objects.requireNonNullElseGet(ingredients, LinkedList::new);
         this.result = result;
     }
@@ -46,6 +50,17 @@ public abstract class ShapedRecipe extends Recipe {
     public void setGroup(@NotNull String group) {
         this.group = group;
     }
+
+    // Rainstom start categoryを追加
+    public @NotNull CraftingRecipeCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(@NotNull CraftingRecipeCategory category) {
+        this.category = category;
+    }
+
+    // Rainstom end
 
     public void addIngredient(DeclareRecipesPacket.Ingredient ingredient) {
         if (ingredients.size() + 1 > width * height) {

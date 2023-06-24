@@ -1,11 +1,13 @@
 package net.minestom.server.recipe;
 
+import dev.uten2c.rainstom.recipe.BurningRecipeCategory;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.packet.server.play.DeclareRecipesPacket;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class SmeltingRecipe extends Recipe {
     private String group;
+    private @NotNull BurningRecipeCategory category; // Rainstom categoryを追加
     private DeclareRecipesPacket.Ingredient ingredient;
     private ItemStack result;
     private float experience;
@@ -14,12 +16,14 @@ public abstract class SmeltingRecipe extends Recipe {
     protected SmeltingRecipe(
             @NotNull String recipeId,
             @NotNull String group,
+            @NotNull BurningRecipeCategory category, // Rainstom categoryを追加
             @NotNull ItemStack result,
             float experience,
             int cookingTime
     ) {
         super(Type.SMELTING, recipeId);
         this.group = group;
+        this.category = category;
         this.result = result;
         this.experience = experience;
         this.cookingTime = cookingTime;
@@ -33,6 +37,16 @@ public abstract class SmeltingRecipe extends Recipe {
     public void setGroup(@NotNull String group) {
         this.group = group;
     }
+
+    // Rainstom start categoryを追加
+    public @NotNull BurningRecipeCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(@NotNull BurningRecipeCategory category) {
+        this.category = category;
+    }
+    // Rainstom end
 
     @NotNull
     public DeclareRecipesPacket.Ingredient getIngredient() {

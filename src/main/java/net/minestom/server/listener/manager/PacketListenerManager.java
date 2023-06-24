@@ -2,6 +2,7 @@ package net.minestom.server.listener.manager;
 
 import dev.uten2c.rainstom.server.listener.ChatSessionUpdateListener;
 import dev.uten2c.rainstom.server.listener.RecipeBookListener;
+import dev.uten2c.rainstom.server.listener.SetDisplayedRecipeListener;
 import dev.uten2c.rainstom.server.listener.WindowButtonPacketListener;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerProcess;
@@ -65,6 +66,7 @@ public final class PacketListenerManager {
         setListener(ClientSetRecipeBookStatePacket.class, RecipeBookListener::listener);
         setListener(ClientClickWindowButtonPacket.class, WindowButtonPacketListener::listener);
         setListener(ClientChatSessionUpdatePacket.class, ChatSessionUpdateListener::listener);
+        setListener(ClientSetDisplayedRecipePacket.class, SetDisplayedRecipeListener::listener);
         // Rainstom end
     }
 
