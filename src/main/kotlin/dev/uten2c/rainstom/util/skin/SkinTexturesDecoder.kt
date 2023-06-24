@@ -10,7 +10,7 @@ object SkinTexturesDecoder {
     }
 
     @JvmStatic
-    fun decode(skin: PlayerSkin): DecodedTextures {
+    fun decode(skin: PlayerSkin): DecodedSkinTextures {
         val decodedBase64 = Base64.getDecoder().decode(skin.textures())
         return json.decodeFromString(decodedBase64.decodeToString())
     }

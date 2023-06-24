@@ -3,7 +3,7 @@ package dev.uten2c.rainstom.util.skin
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DecodedTextures(
+data class DecodedSkinTextures(
     val timestamp: Long,
     val profileId: String,
     val profileName: String,

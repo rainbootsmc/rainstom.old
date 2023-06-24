@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.uten2c.rainstom.util.skin.DecodedTextures;
+import dev.uten2c.rainstom.util.skin.DecodedSkinTextures;
 import dev.uten2c.rainstom.util.skin.SkinTexturesDecoder;
 import net.minestom.server.utils.mojang.MojangUtils;
 import org.jetbrains.annotations.Blocking;
@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
  * or in the linked event {@link net.minestom.server.event.player.PlayerSkinInitEvent}.
  */
 public record PlayerSkin(String textures, String signature) {
-    // Rainstom start
-    private static final Cache<PlayerSkin, DecodedTextures> decodedTexturesCache = Caffeine.newBuilder()
+    // Rainstom start デコードしたスキンデータのキャッシュ
+    private static final Cache<PlayerSkin, DecodedSkinTextures> decodedTexturesCache = Caffeine.newBuilder()
             .weakKeys()
             .build();
     // Rainstom end
@@ -87,7 +87,7 @@ public record PlayerSkin(String textures, String signature) {
     }
 
     // Rainstom start
-    public DecodedTextures decodedTextures() {
+    public DecodedSkinTextures decodedTextures() {
         return decodedTexturesCache.get(this, SkinTexturesDecoder::decode);
     }
 
