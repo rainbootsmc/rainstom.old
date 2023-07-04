@@ -9,6 +9,11 @@ import net.minestom.server.item.ItemStack
  */
 interface InventoryListener {
     /**
+     * プレイヤーがインベントリーを開く前に発火する
+     */
+    fun onBeforeOpen(player: Player) {}
+
+    /**
      * プレイヤーがインベントリーを開いたときに発火する
      */
     fun onOpen(player: Player) {}

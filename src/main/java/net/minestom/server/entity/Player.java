@@ -1511,6 +1511,12 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
                 return;
             }
 
+            // Rainstom start InventoryListenerのonBeforeOpenを呼び出す
+            if (newInventory instanceof InventoryListener inventoryListener) {
+                inventoryListener.onBeforeOpen(this);
+            }
+            // Rainstom end
+
             sendPacket(new OpenWindowPacket(newInventory.getWindowId(),
                     newInventory.getInventoryType().getWindowType(), newInventory.getTitle()));
             newInventory.addViewer(this);
