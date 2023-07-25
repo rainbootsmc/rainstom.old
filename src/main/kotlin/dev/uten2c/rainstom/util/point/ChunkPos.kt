@@ -4,7 +4,7 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Chunk
 import net.minestom.server.utils.chunk.ChunkUtils
 
-class ChunkPos(val x: Int, val z: Int) {
+data class ChunkPos(val x: Int, val z: Int) {
     constructor(long: Long) : this(long.toInt(), (long shr 32).toInt())
 
     fun toLong(): Long {
