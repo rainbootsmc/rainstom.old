@@ -19,12 +19,12 @@ public class EntityDamageEvent implements EntityInstanceEvent, CancellableEvent 
     private float damage;
     private SoundEvent sound;
     private boolean animation = true;
-    private float hurtDir; // Rainstom 1.19.4ダメージを受けた方向
+    private @Nullable Float hurtDir; // Rainstom 1.19.4ダメージを受けた方向
 
     private boolean cancelled;
 
     public EntityDamageEvent(@NotNull LivingEntity entity, @NotNull DamageType damageType,
-                             float damage, @Nullable SoundEvent sound, float hurtDir) { // Rainstom 1.19.4ダメージを受けた方向
+                             float damage, @Nullable SoundEvent sound, @Nullable Float hurtDir) { // Rainstom 1.19.4ダメージを受けた方向
         this.entity = entity;
         this.damageType = damageType;
         this.damage = damage;
@@ -90,7 +90,7 @@ public class EntityDamageEvent implements EntityInstanceEvent, CancellableEvent 
      *
      * @return ダメージを受けた方向
      */
-    public float getHurtDir() {
+    public @Nullable Float getHurtDir() {
         return hurtDir;
     }
 
@@ -99,7 +99,7 @@ public class EntityDamageEvent implements EntityInstanceEvent, CancellableEvent 
      *
      * @param hurtDir ダメージを受けた方向
      */
-    public void setHurtDir(float hurtDir) {
+    public void setHurtDir(@Nullable Float hurtDir) {
         this.hurtDir = hurtDir;
     }
 

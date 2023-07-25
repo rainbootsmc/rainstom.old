@@ -2327,8 +2327,8 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
 
     // Rainstom start ダメージの向き関連
     @Override
-    public void playHurtAnimation() {
-        sendPacket(new HitAnimationPacket(getEntityId(), getHurtDir()));
+    public void playHurtAnimation(float hurtDir) {
+        sendPacket(new HitAnimationPacket(getEntityId(), hurtDir));
     }
     // Rainstom end
 }

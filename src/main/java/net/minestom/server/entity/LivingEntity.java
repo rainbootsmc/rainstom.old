@@ -90,8 +90,6 @@ public class LivingEntity extends Entity implements EquipmentHandler {
     private ItemStack leggings;
     private ItemStack boots;
 
-    private float hurtDir; // Rainstom 1.19.4
-
     /**
      * Constructor which allows to specify an UUID. Only use if you know what you are doing!
      */
@@ -329,7 +327,11 @@ public class LivingEntity extends Entity implements EquipmentHandler {
 
     // Rainstom start
     public boolean damage(@NotNull DamageType type, float value) {
-        return damage(type, value, 0f);
+        return damage(type, value, null);
+    }
+
+    public boolean damage(@NotNull DamageType type, float value, double hurtDirX, double hurtDirZ) {
+        return damage(type, value, getHurtDir(hurtDirX, hurtDirZ));
     }
     // Rainstom end
 
@@ -341,14 +343,14 @@ public class LivingEntity extends Entity implements EquipmentHandler {
      * @param hurtDir ダメージを受けた方向
      * @return true if damage has been applied, false if it didn't
      */
-    public boolean damage(@NotNull DamageType type, float value, float hurtDir) { // Rainstom 1.19.4 hurtDirを追加
+    public boolean damage(@NotNull DamageType type, float value, @Nullable Float hurtDir) { // Rainstom 1.19.4 hurtDirを追加
         if (isDead())
             return false;
         if (isInvulnerable() || isImmune(type)) {
             return false;
         }
 
-        EntityDamageEvent entityDamageEvent = new EntityDamageEvent(this, type, value, type.getSound(this), 0f);
+        EntityDamageEvent entityDamageEvent = new EntityDamageEvent(this, type, value, type.getSound(this), hurtDir);
         EventDispatcher.callCancellable(entityDamageEvent, () -> {
             // Set the last damage type since the event is not cancelled
             this.lastDamageSource = entityDamageEvent.getDamageType();
@@ -366,7 +368,10 @@ public class LivingEntity extends Entity implements EquipmentHandler {
                         .orElse(0);
                 final var damageEventPacket = new DamageEventPacket(getEntityId(), sourceTypeId, 0, 0, null);
                 sendPacketToViewersAndSelf(damageEventPacket);
-                playHurtAnimation();
+                final var finalHurtDir = entityDamageEvent.getHurtDir();
+                if (finalHurtDir != null) {
+                    playHurtAnimation(finalHurtDir);
+                }
                 // Rainstom end
             }
 
@@ -732,30 +737,16 @@ public class LivingEntity extends Entity implements EquipmentHandler {
     }
 
     // Rainstom start ダメージの向き関連
-    public float getHurtDir() {
-        return hurtDir;
-    }
-
-    public void setHurtDir(float hurtDir) {
-        this.hurtDir = hurtDir;
-    }
-
-    public void setHurtDir(double dirX, double dirZ) {
-        this.hurtDir = (float) (Math.atan2(dirZ, dirX) * 180.0F / (float) Math.PI - (double) this.position.yaw());
-    }
-
-    public void playHurtAnimation() {
+    public void playHurtAnimation(float hurtDir) {
         // Empty
     }
 
-    public final void playHurtAnimation(float hurtDir) {
-        setHurtDir(hurtDir);
-        playHurtAnimation();
+    public final void playHurtAnimation(double dirX, double dirZ) {
+        playHurtAnimation(getHurtDir(dirX, dirZ));
     }
 
-    public final void playHurtAnimation(double dirX, double dirZ) {
-        setHurtDir(dirX, dirZ);
-        playHurtAnimation();
+    private float getHurtDir(double dirX, double dirZ) {
+        return (float) (Math.atan2(dirZ, dirX) * 180.0F / (float) Math.PI - (double) position.yaw());
     }
     // Rainstom end
 }
