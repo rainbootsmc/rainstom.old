@@ -1,13 +1,12 @@
 package net.minestom.server.network;
 
-import dev.uten2c.rainstom.util.math.Quaternionf;
-import dev.uten2c.rainstom.util.math.Vec3f;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.metadata.animal.FrogMeta;
+import net.minestom.server.entity.metadata.animal.SnifferMeta;
 import net.minestom.server.entity.metadata.animal.tameable.CatMeta;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -461,7 +460,13 @@ final class NetworkBufferTypes {
                 if (!present) return null;
                 return buffer.read(UUID);
             });
-    static final TypeImpl<Integer> OPT_BLOCK_ID = new TypeImpl<>(Integer.class,
+    static final TypeImpl<Integer> BLOCK_STATE = new TypeImpl<>(Integer.class,
+            (buffer, value) -> {
+                buffer.write(NetworkBuffer.VAR_INT, value);
+                return -1;
+            },
+            buffer -> buffer.read(VAR_INT));
+    static final TypeImpl<Integer> OPT_BLOCK_STATE = new TypeImpl<>(Integer.class,
             (buffer, value) -> {
                 if (value == null) {
                     buffer.write(NetworkBuffer.VAR_INT, 0);
@@ -527,31 +532,6 @@ final class NetworkBufferTypes {
                 }
                 return null;
             });
-    // Rainstom start
-    static final TypeImpl<@NotNull Integer> BLOCK_ID = new TypeImpl<>(Integer.class,
-            (buffer, value) -> {
-                buffer.write(VAR_INT, value);
-                return -1;
-            },
-            buffer -> buffer.read(VAR_INT));
-    static final TypeImpl<Vec3f> VECTOR = new TypeImpl<>(Vec3f.class,
-            (buffer, value) -> {
-                buffer.write(FLOAT, value.x());
-                buffer.write(FLOAT, value.y());
-                buffer.write(FLOAT, value.z());
-                return -1;
-            },
-            buffer -> new Vec3f(buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT)));
-    static final TypeImpl<Quaternionf> QUATERNION = new TypeImpl<>(Quaternionf.class,
-            (buffer, value) -> {
-                buffer.write(FLOAT, value.x());
-                buffer.write(FLOAT, value.y());
-                buffer.write(FLOAT, value.z());
-                buffer.write(FLOAT, value.w());
-                return -1;
-            },
-            buffer -> new Quaternionf(buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT), buffer.read(FLOAT)));
-    // Rainstom end
     static final TypeImpl<CatMeta.Variant> CAT_VARIANT = new TypeImpl<>(CatMeta.Variant.class,
             (buffer, value) -> {
                 buffer.write(VAR_INT, value.ordinal());
@@ -569,6 +549,56 @@ final class NetworkBufferTypes {
             buffer -> {
                 final int ordinal = buffer.read(VAR_INT);
                 return FrogMeta.Variant.values()[ordinal];
+            });
+    static final TypeImpl<SnifferMeta.State> SNIFFER_STATE = new TypeImpl<>(SnifferMeta.State.class,
+            (buffer, value) -> {
+                buffer.write(VAR_INT, value.ordinal());
+                return -1;
+            },
+            buffer -> {
+                final int ordinal = buffer.read(VAR_INT);
+                return SnifferMeta.State.values()[ordinal];
+            });
+    static final TypeImpl<Point> VECTOR3 = new TypeImpl<>(Point.class,
+            (buffer, value) -> {
+                buffer.write(FLOAT, (float) value.x());
+                buffer.write(FLOAT, (float) value.y());
+                buffer.write(FLOAT, (float) value.z());
+                return -1;
+            },
+            buffer -> {
+                final float x = buffer.read(FLOAT);
+                final float y = buffer.read(FLOAT);
+                final float z = buffer.read(FLOAT);
+                return new Vec(x, y, z);
+            });
+    static final TypeImpl<Point> VECTOR3D = new TypeImpl<>(Point.class,
+            (buffer, value) -> {
+                buffer.write(DOUBLE, value.x());
+                buffer.write(DOUBLE, value.y());
+                buffer.write(DOUBLE, value.z());
+                return -1;
+            },
+            buffer -> {
+                final double x = buffer.read(DOUBLE);
+                final double y = buffer.read(DOUBLE);
+                final double z = buffer.read(DOUBLE);
+                return new Vec(x, y, z);
+            });
+    static final TypeImpl<float[]> QUATERNION = new TypeImpl<>(float[].class,
+            (buffer, value) -> {
+                buffer.write(FLOAT, value[0]);
+                buffer.write(FLOAT, value[1]);
+                buffer.write(FLOAT, value[2]);
+                buffer.write(FLOAT, value[3]);
+                return -1;
+            },
+            buffer -> {
+                final float x = buffer.read(FLOAT);
+                final float y = buffer.read(FLOAT);
+                final float z = buffer.read(FLOAT);
+                final float w = buffer.read(FLOAT);
+                return new float[]{x, y, z, w};
             });
 
     record TypeImpl<T>(@NotNull Class<T> type,

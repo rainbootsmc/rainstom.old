@@ -1,6 +1,6 @@
 plugins {
-    id("java-library")
-    `maven-publish`
+    `java-library`
+    // `maven-publish`
 }
 
 publishing {
@@ -16,7 +16,7 @@ publishing {
 }
 
 group = "net.minestom.testing"
-version = "1.0"
+// version declared by root project
 
 repositories {
     mavenCentral()
@@ -25,9 +25,8 @@ repositories {
 }
 
 dependencies {
-    // Minestom API
-    api(project(mapOf("path" to ":")))
-    // Junit Testing Framework
+    api(rootProject)
+
     api(libs.junit.api)
     api(libs.junit.params)
     api(libs.junit.suite.api)

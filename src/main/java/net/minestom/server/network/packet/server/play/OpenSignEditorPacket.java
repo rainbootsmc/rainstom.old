@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 import static net.minestom.server.network.NetworkBuffer.BLOCK_POSITION;
 import static net.minestom.server.network.NetworkBuffer.BOOLEAN;
 
-public record OpenSignEditorPacket(@NotNull Point position, boolean isFrontText) implements ServerPacket { // Rainstom 1.20 isFrontTextを追加
+public record OpenSignEditorPacket(@NotNull Point position, boolean isFrontText) implements ServerPacket {
     public OpenSignEditorPacket(@NotNull NetworkBuffer reader) {
-        this(reader.read(BLOCK_POSITION), reader.read(BOOLEAN)); // Rainstom 1.20 isFrontTextを追加
+        this(reader.read(BLOCK_POSITION), reader.read(BOOLEAN));
     }
 
     @Override
     public void write(@NotNull NetworkBuffer writer) {
         writer.write(BLOCK_POSITION, position);
-        writer.write(BOOLEAN, isFrontText); // Rainstom 1.20 isFrontTextを追加
+        writer.write(BOOLEAN, isFrontText);
     }
 
     @Override

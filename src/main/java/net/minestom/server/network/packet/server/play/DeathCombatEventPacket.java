@@ -13,16 +13,14 @@ import java.util.function.UnaryOperator;
 
 import static net.minestom.server.network.NetworkBuffer.*;
 
-public record DeathCombatEventPacket(int playerId, // Rainstom 1.20 entityIdを削除
-                                     @NotNull Component message) implements ComponentHoldingServerPacket {
+public record DeathCombatEventPacket(int playerId, @NotNull Component message) implements ComponentHoldingServerPacket {
     public DeathCombatEventPacket(@NotNull NetworkBuffer reader) {
-        this(reader.read(VAR_INT), reader.read(COMPONENT)); // Rainstom 1.20 entityIdを削除
+        this(reader.read(VAR_INT), reader.read(COMPONENT));
     }
 
     @Override
     public void write(@NotNull NetworkBuffer writer) {
         writer.write(VAR_INT, playerId);
-        // writer.write(INT, entityId); // Rainstom 1.20 entityIdを削除
         writer.write(COMPONENT, message);
     }
 
@@ -38,6 +36,6 @@ public record DeathCombatEventPacket(int playerId, // Rainstom 1.20 entityIdを�
 
     @Override
     public @NotNull ServerPacket copyWithOperator(@NotNull UnaryOperator<Component> operator) {
-        return new DeathCombatEventPacket(this.playerId, operator.apply(this.message)); // Rainstom 1.20 entityIdを削除
+        return new DeathCombatEventPacket(this.playerId, operator.apply(this.message));
     }
 }

@@ -5,18 +5,16 @@ import net.minestom.server.network.packet.server.ServerPacket;
 import net.minestom.server.network.packet.server.ServerPacketIdentifier;
 import org.jetbrains.annotations.NotNull;
 
-import static net.minestom.server.network.NetworkBuffer.INT;
 import static net.minestom.server.network.NetworkBuffer.VAR_INT;
 
-public record EndCombatEventPacket(int duration) implements ServerPacket { // Rainstom 1.20 entityIdを削除
+public record EndCombatEventPacket(int duration) implements ServerPacket {
     public EndCombatEventPacket(@NotNull NetworkBuffer reader) {
-        this(reader.read(VAR_INT)); // Rainstom 1.20 entityIdを削除
+        this(reader.read(VAR_INT));
     }
 
     @Override
     public void write(@NotNull NetworkBuffer writer) {
         writer.write(VAR_INT, duration);
-        // writer.write(INT, entityId); // Rainstom 1.20 entityIdを削除
     }
 
     @Override

@@ -1,19 +1,10 @@
 package net.minestom.server.network;
 
-import dev.uten2c.rainstom.util.math.Quaternionf;
-import dev.uten2c.rainstom.util.math.Vec3f;
-import java.util.BitSet;
-import java.util.Collection;
-
-import java.util.EnumSet;
-import java.util.List;
-
-import java.util.UUID;
-
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.metadata.animal.FrogMeta;
+import net.minestom.server.entity.metadata.animal.SnifferMeta;
 import net.minestom.server.entity.metadata.animal.tameable.CatMeta;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.packet.server.play.data.DeathLocation;
@@ -52,10 +43,6 @@ public final class NetworkBuffer {
     public static final Type<Component> COMPONENT = NetworkBufferTypes.COMPONENT;
     public static final Type<UUID> UUID = NetworkBufferTypes.UUID;
     public static final Type<ItemStack> ITEM = NetworkBufferTypes.ITEM;
-    // Rainstom start
-    public static final Type<Vec3f> VECTOR3 = NetworkBufferTypes.VECTOR;
-    public static final Type<Quaternionf> QUATERNION = NetworkBufferTypes.QUATERNION;
-    // Rainstom end
 
     public static final Type<byte[]> BYTE_ARRAY = NetworkBufferTypes.BYTE_ARRAY;
     public static final Type<long[]> LONG_ARRAY = NetworkBufferTypes.LONG_ARRAY;
@@ -68,14 +55,18 @@ public final class NetworkBuffer {
     public static final Type<Point> OPT_BLOCK_POSITION = NetworkBufferTypes.OPT_BLOCK_POSITION;
     public static final Type<Direction> DIRECTION = NetworkBufferTypes.DIRECTION;
     public static final Type<UUID> OPT_UUID = NetworkBufferTypes.OPT_UUID;
-    public static final Type<@NotNull Integer> BLOCK_ID = NetworkBufferTypes.BLOCK_ID; // Rainstom
-    public static final Type<Integer> OPT_BLOCK_ID = NetworkBufferTypes.OPT_BLOCK_ID;
+    public static final Type<Integer> BLOCK_STATE = NetworkBufferTypes.BLOCK_STATE;
+    public static final Type<Integer> OPT_BLOCK_STATE = NetworkBufferTypes.OPT_BLOCK_STATE;
     public static final Type<int[]> VILLAGER_DATA = NetworkBufferTypes.VILLAGER_DATA;
     public static final Type<Integer> OPT_VAR_INT = NetworkBufferTypes.OPT_VAR_INT;
     public static final Type<Entity.Pose> POSE = NetworkBufferTypes.POSE;
     public static final Type<DeathLocation> DEATH_LOCATION = NetworkBufferTypes.DEATH_LOCATION;
     public static final Type<CatMeta.Variant> CAT_VARIANT = NetworkBufferTypes.CAT_VARIANT;
     public static final Type<FrogMeta.Variant> FROG_VARIANT = NetworkBufferTypes.FROG_VARIANT;
+    public static final Type<SnifferMeta.State> SNIFFER_STATE = NetworkBufferTypes.SNIFFER_STATE;
+    public static final Type<Point> VECTOR3 = NetworkBufferTypes.VECTOR3;
+    public static final Type<Point> VECTOR3D = NetworkBufferTypes.VECTOR3D;
+    public static final Type<float[]> QUATERNION = NetworkBufferTypes.QUATERNION;
 
     ByteBuffer nioBuffer;
     final boolean resizable;
@@ -264,12 +255,6 @@ public final class NetworkBuffer {
         readIndex += length;
         return bytes;
     }
-
-    // Rainstom start writeBitSetとreadBitSetを追加
-    public void writeBitSet(BitSet bitSet) {
-        write(LONG_ARRAY, bitSet.toLongArray());
-    }
-    // Rainstom end
 
     public void copyTo(int srcOffset, byte @NotNull [] dest, int destOffset, int length) {
         this.nioBuffer.get(srcOffset, dest, destOffset, length);

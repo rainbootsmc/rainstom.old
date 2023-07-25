@@ -6,6 +6,7 @@ import dev.uten2c.rainstom.item.drop.DropAmount;
 import dev.uten2c.rainstom.item.drop.DropType;
 import dev.uten2c.rainstom.network.packet.server.play.BundleDelimiterPacket;
 import dev.uten2c.rainstom.network.packet.server.play.HurtAnimationPacket;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
@@ -67,6 +68,7 @@ import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.network.player.PlayerSocketConnection;
 import net.minestom.server.recipe.Recipe;
 import net.minestom.server.recipe.RecipeManager;
+import net.minestom.server.registry.Registry;
 import net.minestom.server.resourcepack.ResourcePack;
 import net.minestom.server.scoreboard.BelowNameTag;
 import net.minestom.server.scoreboard.Team;
@@ -76,6 +78,7 @@ import net.minestom.server.snapshot.SnapshotImpl;
 import net.minestom.server.snapshot.SnapshotUpdater;
 import net.minestom.server.statistic.PlayerStatistic;
 import net.minestom.server.timer.Scheduler;
+import net.minestom.server.timer.TaskSchedule;
 import net.minestom.server.utils.MathUtils;
 import net.minestom.server.utils.PacketUtils;
 import net.minestom.server.utils.async.AsyncUtils;
@@ -95,7 +98,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jglrxavpok.hephaistos.nbt.NBT;
-import org.jglrxavpok.hephaistos.nbt.NBTCompound;
+import org.jglrxavpok.hephaistos.nbt.NBTType;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -104,6 +107,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
@@ -131,7 +135,6 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     private DimensionType dimensionType;
     private GameMode gameMode;
     private DeathLocation deathLocation;
-    private int portalCooldown; // Rainstom 1.20 portalCooldownを追加
     /**
      * Keeps track of what chunks are sent to the client, this defines the center of the loaded area
      * in the range of {@link MinecraftServer#getChunkViewDistance()}
@@ -164,6 +167,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     private final PlayerSettings settings;
     private float exp;
     private int level;
+    private int portalCooldown = 0;
 
     protected PlayerInventory inventory;
     private Inventory openInventory;
@@ -255,17 +259,16 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     public CompletableFuture<Void> UNSAFE_init(@NotNull Instance spawnInstance) {
         this.dimensionType = spawnInstance.getDimensionType();
 
-        NBTCompound nbt = NBT.Compound(Map.of(
-                "minecraft:chat_type", Messenger.chatRegistry(),
-                "minecraft:dimension_type", MinecraftServer.getDimensionTypeManager().toNBT(),
-                "minecraft:worldgen/biome", MinecraftServer.getBiomeManager().toNBT(),
-                "minecraft:damage_type", MinecraftServer.getVanillaDamageTypeManager().toNBT()
-        ));
+        var registry = new HashMap<String, NBT>();
+        registry.put("minecraft:chat_type", Messenger.chatRegistry());
+        registry.put("minecraft:dimension_type", MinecraftServer.getDimensionTypeManager().toNBT());
+        registry.put("minecraft:worldgen/biome", MinecraftServer.getBiomeManager().toNBT());
+        registry.put("minecraft:damage_type", MinecraftServer.getVanillaDamageTypeManager().toNBT());
 
         final JoinGamePacket joinGamePacket = new JoinGamePacket(getEntityId(), false, gameMode, null,
-                List.of(dimensionType.getName().asString()), nbt, dimensionType.toString(), dimensionType.getName().asString(),
+                List.of(), NBT.Compound(registry), dimensionType.toString(), spawnInstance.getDimensionName(),
                 0, 0, MinecraftServer.getChunkViewDistance(), MinecraftServer.getChunkViewDistance(),
-                false, true, false, levelFlat, deathLocation, portalCooldown); // Rainstom 1.20 portalCooldownを追加
+                false, true, false, levelFlat, deathLocation, portalCooldown);
         sendPacket(joinGamePacket);
 
         // Server brand name
@@ -439,7 +442,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
 
             // #buildDeathScreenText can return null, check here
             if (deathText != null) {
-                sendPacket(new DeathCombatEventPacket(getEntityId(), deathText)); // Rainstom 1.20 entityIdを削除
+                sendPacket(new DeathCombatEventPacket(getEntityId(), deathText));
             }
 
             // #buildDeathMessage can return null, check here
@@ -466,8 +469,8 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         setOnFire(false);
         refreshHealth();
 
-        sendPacket(new RespawnPacket(getDimensionType().toString(), getDimensionType().getName().asString(),
-               0, gameMode, gameMode, false, levelFlat, true, deathLocation, portalCooldown)); // Rainstom 1.20 portalCooldownを追加
+        sendPacket(new RespawnPacket(getDimensionType().toString(), instance.getDimensionName(),
+                0, gameMode, gameMode, false, levelFlat, true, deathLocation, portalCooldown));
 
         PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(this);
         EventDispatcher.call(respawnEvent);
@@ -504,6 +507,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
      * Sends necessary packets to synchronize player data after a {@link RespawnPacket}
      */
     private void refreshClientStateAfterRespawn() {
+        sendPacket(new ServerDifficultyPacket(MinecraftServer.getDifficulty(), false));
         sendPacket(new UpdateHealthPacket(this.getHealth(), food, foodSaturation));
         sendPacket(new SetExperiencePacket(exp, level, 0));
         triggerStatus((byte) (24 + permissionLevel)); // Set permission level
@@ -592,7 +596,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         }
         // Must update the player chunks
         chunkUpdateLimitChecker.clearHistory();
-        final boolean dimensionChange = !Objects.equals(dimensionType, instance.getDimensionType());
+        final boolean dimensionChange = currentInstance != null && !Objects.equals(currentInstance.getDimensionName(), instance.getDimensionName());
         final Consumer<Instance> runnable = (i) -> spawnPlayer(i, spawnPosition,
                 currentInstance == null, dimensionChange, true);
 
@@ -668,13 +672,13 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
      */
     private void spawnPlayer(@NotNull Instance instance, @NotNull Pos spawnPosition,
                              boolean firstSpawn, boolean dimensionChange, boolean updateChunks) {
-        if (!firstSpawn) {
+        if (!firstSpawn && !dimensionChange) {
             // Player instance changed, clear current viewable collections
             if (updateChunks)
                 ChunkUtils.forChunksInRange(spawnPosition, MinecraftServer.getChunkViewDistance(), chunkRemover);
         }
 
-        if (dimensionChange) sendDimension(instance.getDimensionType());
+        if (dimensionChange) sendDimension(instance.getDimensionType(), instance.getDimensionName());
 
         super.setInstance(instance, spawnPosition);
 
@@ -684,13 +688,40 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
             chunksLoadedByClient = new Vec(chunkX, chunkZ);
             chunkUpdateLimitChecker.addToHistory(getChunk());
             sendPacket(new UpdateViewPositionPacket(chunkX, chunkZ));
-            ChunkUtils.forChunksInRange(spawnPosition, MinecraftServer.getChunkViewDistance(), chunkAdder);
+
+            if (ChunkUtils.USE_NEW_CHUNK_SENDING) {
+                // FIXME: Improve this queueing. It is pretty scuffed
+                var chunkQueue = new LongArrayList();
+                ChunkUtils.forChunksInRange(spawnPosition, MinecraftServer.getChunkViewDistance(),
+                        (x, z) -> chunkQueue.add(ChunkUtils.getChunkIndex(x, z)));
+                var iter = chunkQueue.iterator();
+                Supplier<TaskSchedule> taskRunnable = () -> {
+                    for (int i = 0; i < ChunkUtils.NEW_CHUNK_COUNT_PER_INTERVAL; i++) {
+                        if (!iter.hasNext()) return TaskSchedule.stop();
+
+                        var next = iter.nextLong();
+                        chunkAdder.accept(ChunkUtils.getChunkCoordX(next), ChunkUtils.getChunkCoordZ(next));
+                    }
+
+                    return TaskSchedule.tick(ChunkUtils.NEW_CHUNK_SEND_INTERVAL);
+                };
+                scheduler().submitTask(taskRunnable);
+            } else {
+                ChunkUtils.forChunksInRange(spawnPosition, MinecraftServer.getChunkViewDistance(), chunkAdder);
+            }
         }
 
         synchronizePosition(true); // So the player doesn't get stuck
 
+        if (dimensionChange) {
+            sendPacket(new SpawnPositionPacket(spawnPosition, 0));
+            instance.getWorldBorder().init(this);
+            sendPacket(new TimeUpdatePacket(instance.getWorldAge(), instance.getTime()));
+        }
+
         if (dimensionChange || firstSpawn) {
             this.inventory.update();
+            sendPacket(new HeldItemChangePacket(heldSlot));
         }
 
         EventDispatcher.call(new PlayerSpawnEvent(this, instance, firstSpawn));
@@ -990,8 +1021,8 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         final PlayerInfoRemovePacket removePlayerPacket = getRemovePlayerToList();
         final PlayerInfoUpdatePacket addPlayerPacket = getAddPlayerToList();
 
-        RespawnPacket respawnPacket = new RespawnPacket(getDimensionType().toString(), getDimensionType().getName().asString(),
-                0, gameMode, gameMode, false, levelFlat, true, deathLocation, portalCooldown); // Rainstom 1.20 portalCooldownを追加
+        RespawnPacket respawnPacket = new RespawnPacket(getDimensionType().toString(), instance.getDimensionName(),
+                0, gameMode, gameMode, false, levelFlat, true, deathLocation, portalCooldown);
 
         sendPacket(removePlayerPacket);
         sendPacket(destroyEntitiesPacket);
@@ -1020,16 +1051,6 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     public @Nullable DeathLocation getDeathLocation() {
         return this.deathLocation;
     }
-
-    // Rainstom start 1.20 portalCooldownを追加
-    public int getPortalCooldown() {
-        return portalCooldown;
-    }
-
-    public void setPortalCooldown(int portalCooldown) {
-        this.portalCooldown = portalCooldown;
-    }
-    // Rainstom end
 
     /**
      * Gets if the player has the respawn screen enabled or disabled.
@@ -1255,6 +1276,14 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     }
     // Rainstom end
 
+    public int getPortalCooldown() {
+        return portalCooldown;
+    }
+
+    public void setPortalCooldown(int portalCooldown) {
+        this.portalCooldown = portalCooldown;
+    }
+
     /**
      * Gets the player connection.
      * <p>
@@ -1402,12 +1431,12 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
      *
      * @param dimensionType the new player dimension
      */
-    protected void sendDimension(@NotNull DimensionType dimensionType) {
-        Check.argCondition(dimensionType.equals(getDimensionType()),
+    protected void sendDimension(@NotNull DimensionType dimensionType, @NotNull String dimensionName) {
+        Check.argCondition(instance.getDimensionName().equals(dimensionName),
                 "The dimension needs to be different than the current one!");
         this.dimensionType = dimensionType;
-        sendPacket(new RespawnPacket(dimensionType.toString(), getDimensionType().getName().asString(),
-                0, gameMode, gameMode, false, levelFlat, true, deathLocation, portalCooldown)); // Rainstom 1.20 portalCooldownを追加
+        sendPacket(new RespawnPacket(dimensionType.toString(), dimensionName,
+                0, gameMode, gameMode, false, levelFlat, true, deathLocation, portalCooldown));
         refreshClientStateAfterRespawn();
     }
 
@@ -1615,7 +1644,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     @ApiStatus.Internal
     protected void synchronizePosition(boolean includeSelf) {
         if (includeSelf) {
-            sendPacket(new PlayerPositionAndLookPacket(position, (byte) 0x00, getNextTeleportId())); // Rainstom 1.19.4 dismountVehicleを削除
+            sendPacket(new PlayerPositionAndLookPacket(position, (byte) 0x00, getNextTeleportId()));
         }
         super.synchronizePosition(includeSelf);
     }

@@ -45,11 +45,11 @@ public final class PlayerInfoUpdatePacket implements ServerPacket {
                         username = reader.read(STRING);
                         properties = reader.readCollection(Property::new);
                     }
-                    case INITIALIZE_CHAT -> chatSession = reader.readOptional(ChatSession::new); // Rainstom 1.19.4
+                    case INITIALIZE_CHAT -> chatSession = reader.readOptional(ChatSession::new);
                     case UPDATE_GAME_MODE -> gameMode = reader.readEnum(GameMode.class);
                     case UPDATE_LISTED -> listed = reader.read(BOOLEAN);
                     case UPDATE_LATENCY -> latency = reader.read(VAR_INT);
-                    case UPDATE_DISPLAY_NAME -> displayName = reader.readOptional(COMPONENT);
+                    case UPDATE_DISPLAY_NAME -> displayName = reader.read(COMPONENT);
                 }
             }
             return new Entry(uuid, username, properties, listed, latency, gameMode, displayName, chatSession);

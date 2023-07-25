@@ -7,24 +7,19 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.minestom.server.network.NetworkBuffer.*;
 
-public record MultiBlockChangePacket(long chunkSectionPosition,
-                                     // boolean suppressLightUpdates, // Rainstom 1.20 suppressLightUpdatesを削除
-                                     long[] blocks) implements ServerPacket {
+public record MultiBlockChangePacket(long chunkSectionPosition, long[] blocks) implements ServerPacket {
     public MultiBlockChangePacket(int chunkX, int section, int chunkZ,
-                                  boolean suppressLightUpdates,
                                   long[] blocks) {
-        this(((long) (chunkX & 0x3FFFFF) << 42) | (section & 0xFFFFF) | ((long) (chunkZ & 0x3FFFFF) << 20),
-                blocks); // Rainstom 1.20 suppressLightUpdatesを削除
+        this(((long) (chunkX & 0x3FFFFF) << 42) | (section & 0xFFFFF) | ((long) (chunkZ & 0x3FFFFF) << 20), blocks);
     }
 
     public MultiBlockChangePacket(@NotNull NetworkBuffer reader) {
-        this(reader.read(LONG), reader.read(VAR_LONG_ARRAY)); // Rainstom 1.20 suppressLightUpdatesを削除
+        this(reader.read(LONG), reader.read(VAR_LONG_ARRAY));
     }
 
     @Override
     public void write(@NotNull NetworkBuffer writer) {
         writer.write(LONG, chunkSectionPosition);
-        // writer.write(BOOLEAN, suppressLightUpdates); // Rainstom 1.20 suppressLightUpdatesを削除
         writer.write(VAR_LONG_ARRAY, blocks);
     }
 

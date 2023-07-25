@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.minestom.server.network.NetworkBuffer.*;
 
-public record PlayerPositionAndLookPacket(Pos position, byte flags, int teleportId) implements ServerPacket { // Rainstom 1.19.4 dismountVehicleを削除
+public record PlayerPositionAndLookPacket(Pos position, byte flags, int teleportId) implements ServerPacket {
     public PlayerPositionAndLookPacket(@NotNull NetworkBuffer reader) {
         this(new Pos(reader.read(DOUBLE), reader.read(DOUBLE), reader.read(DOUBLE), reader.read(FLOAT), reader.read(FLOAT)),
-                reader.read(BYTE), reader.read(VAR_INT)); // Rainstom 1.19.4 dismountVehicleを削除
+                reader.read(BYTE), reader.read(VAR_INT));
     }
 
     @Override
@@ -25,7 +25,6 @@ public record PlayerPositionAndLookPacket(Pos position, byte flags, int teleport
 
         writer.write(BYTE, flags);
         writer.write(VAR_INT, teleportId);
-        // Rainstom 1.19.4 dismountVehicleを削除
     }
 
     @Override

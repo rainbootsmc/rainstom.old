@@ -2,6 +2,7 @@ package net.minestom.demo;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.MinestomAdventure;
 import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -17,9 +18,7 @@ import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.item.PickupItemEvent;
 import net.minestom.server.event.player.*;
 import net.minestom.server.event.server.ServerTickMonitorEvent;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.instance.InstanceContainer;
-import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.*;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
@@ -34,9 +33,8 @@ import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.world.DimensionType;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -89,7 +87,7 @@ public class PlayerInit {
                 event.setSpawningInstance(instance);
                 int x = Math.abs(ThreadLocalRandom.current().nextInt()) % 500 - 250;
                 int z = Math.abs(ThreadLocalRandom.current().nextInt()) % 500 - 250;
-                player.setRespawnPoint(new Pos(0, 42f, 0));
+                player.setRespawnPoint(new Pos(0, 40f, 0));
             })
             .addListener(PlayerSpawnEvent.class, event -> {
                 final Player player = event.getPlayer();
@@ -116,6 +114,28 @@ public class PlayerInit {
             })
             .addListener(PlayerPacketEvent.class, event -> {
                 //System.out.println("in " + event.getPacket().getClass().getSimpleName());
+            })
+            .addListener(PlayerUseItemOnBlockEvent.class, event -> {
+                if (event.getHand() != Player.Hand.MAIN) return;
+
+                var itemStack = event.getItemStack();
+                var block = event.getInstance().getBlock(event.getPosition());
+
+                event.getPlayer().sendMessage("MESSAGE " + ThreadLocalRandom.current().nextDouble());
+
+                if ("false".equals(block.getProperty("waterlogged")) && itemStack.material().equals(Material.WATER_BUCKET)) {
+                    block = block.withProperty("waterlogged", "true");
+                    System.out.println("SET WATERLOGGER");
+                } else if ("true".equals(block.getProperty("waterlogged")) && itemStack.material().equals(Material.BUCKET)) {
+                    block = block.withProperty("waterlogged", "false");
+                    System.out.println("SET NOT WATERLOGGED");
+                } else return;
+
+                event.getInstance().setBlock(event.getPosition(), block);
+
+            })
+            .addListener(PlayerBlockPlaceEvent.class, event -> {
+//                event.setDoBlockUpdates(false);
             });
 
     static {
@@ -123,12 +143,16 @@ public class PlayerInit {
 
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer(DimensionType.OVERWORLD);
         instanceContainer.setGenerator(unit -> unit.modifier().fillHeight(0, 40, Block.STONE));
+        instanceContainer.setChunkSupplier(LightingChunk::new);
 
-        if (false) {
-            System.out.println("start");
-            ChunkUtils.forChunksInRange(0, 0, 10, (x, z) -> instanceContainer.loadChunk(x, z).join());
-            System.out.println("load end");
-        }
+        // System.out.println("start");
+        // var chunks = new ArrayList<CompletableFuture<Chunk>>();
+        // ChunkUtils.forChunksInRange(0, 0, 32, (x, z) -> chunks.add(instanceContainer.loadChunk(x, z)));
+
+        // CompletableFuture.runAsync(() -> {
+        //     CompletableFuture.allOf(chunks.toArray(CompletableFuture[]::new)).join();
+        //     System.out.println("load end");
+        // });
 
         inventory = new Inventory(InventoryType.CHEST_1_ROW, Component.text("Test inventory"));
         inventory.setItemStack(3, ItemStack.of(Material.DIAMOND, 34));
@@ -139,6 +163,9 @@ public class PlayerInit {
     public static void init() {
         var eventHandler = MinecraftServer.getGlobalEventHandler();
         eventHandler.addChild(DEMO_NODE);
+
+        MinestomAdventure.AUTOMATIC_COMPONENT_TRANSLATION = true;
+        MinestomAdventure.COMPONENT_TRANSLATOR = (c, l) -> c;
 
         eventHandler.addListener(ServerTickMonitorEvent.class, event -> LAST_TICK.set(event.getTickMonitor()));
 

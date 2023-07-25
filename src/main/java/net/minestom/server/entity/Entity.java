@@ -9,9 +9,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerProcess;
 import net.minestom.server.Tickable;
 import net.minestom.server.Viewable;
-import net.minestom.server.collision.BoundingBox;
-import net.minestom.server.collision.CollisionUtils;
-import net.minestom.server.collision.PhysicsResult;
+import net.minestom.server.collision.*;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -30,6 +28,7 @@ import net.minestom.server.instance.EntityTracker;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.instance.block.BlockFace;
 import net.minestom.server.instance.block.BlockHandler;
 import net.minestom.server.network.packet.server.CachedPacket;
 import net.minestom.server.network.packet.server.LazyPacket;
@@ -64,6 +63,7 @@ import net.minestom.server.utils.validate.Check;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import space.vectrix.flare.fastutil.Int2ObjectSyncMap;
 
 import java.time.Duration;
@@ -84,7 +84,7 @@ import java.util.function.UnaryOperator;
  * To create your own entity you probably want to extends {@link LivingEntity} or {@link EntityCreature} instead.
  */
 public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, EventHandler<EntityEvent>, Taggable,
-        PermissionHandler, HoverEventSource<ShowEntity>, Sound.Emitter {
+        PermissionHandler, HoverEventSource<ShowEntity>, Sound.Emitter, Shape {
 
     private static final int VELOCITY_UPDATE_INTERVAL = 1;
 
@@ -110,6 +110,7 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
     protected Vec velocity = Vec.ZERO; // Movement in block per second
     protected boolean lastVelocityWasZero = true;
     protected boolean hasPhysics = true;
+    protected boolean hasCollision = true;
 
     /**
      * The amount of drag applied on the Y axle.
@@ -300,6 +301,7 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
             this.position = position;
             refreshCoordinate(position);
             synchronizePosition(true);
+            setView(position.yaw(), position.pitch());
         };
 
         if (chunks != null && chunks.length > 0) {
@@ -331,8 +333,7 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
         final Pos currentPosition = this.position;
         if (currentPosition.sameView(yaw, pitch)) return;
         this.position = currentPosition.withView(yaw, pitch);
-        sendPacketToViewersAndSelf(new EntityHeadLookPacket(getEntityId(), yaw));
-        sendPacketToViewersAndSelf(new EntityRotationPacket(getEntityId(), yaw, pitch, onGround));
+        synchronizeView();
     }
 
     /**
@@ -625,9 +626,10 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
         }
 
         // Update velocity
-        if (hasVelocity || !newVelocity.isZero()) {
+        if (!noGravity && (hasVelocity || !newVelocity.isZero())) {
             updateVelocity(wasOnGround, flying, positionBeforeMove, newVelocity);
         }
+
         // Verify if velocity packet has to be sent
         if (this.ticks % VELOCITY_UPDATE_INTERVAL == 0) {
             if (!isPlayer && (hasVelocity || !lastVelocityWasZero)) {
@@ -665,6 +667,8 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
     }
 
     private void touchTick() {
+        if (!hasPhysics) return;
+
         // TODO do not call every tick (it is pretty expensive)
         final Pos position = this.position;
         final BoundingBox boundingBox = this.boundingBox;
@@ -843,7 +847,7 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
      *
      * @return the entity instance, can be null if the entity doesn't have an instance yet
      */
-    public @Nullable Instance getInstance() {
+    public @UnknownNullability Instance getInstance() {
         return instance;
     }
 
@@ -1003,6 +1007,10 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
      */
     public double getDistance(@NotNull Entity entity) {
         return getDistance(entity.getPosition());
+    }
+
+    public double getDistanceSquared(@NotNull Point point) {
+        return getPosition().distanceSquared(point);
     }
 
     /**
@@ -1576,6 +1584,11 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
         this.lastSyncedPosition = posCache;
     }
 
+    private void synchronizeView() {
+        sendPacketToViewersAndSelf(new EntityHeadLookPacket(getEntityId(), position.yaw()));
+        sendPacketToViewersAndSelf(new EntityRotationPacket(getEntityId(), position.yaw(), position.pitch(), onGround));
+    }
+
     /**
      * Asks for a synchronization (position) to happen during next entity tick.
      */
@@ -1731,9 +1744,38 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
 
         Optional<Entity> nearby = instance.getNearbyEntities(position, range).stream()
                 .filter(finalPredicate)
-                .min(Comparator.comparingDouble(e -> e.getDistance(this.position)));
+                .min(Comparator.comparingDouble(e -> e.getDistanceSquared(this)));
 
         return nearby.orElse(null);
+    }
+
+    @Override
+    public boolean isOccluded(@NotNull Shape shape, @NotNull BlockFace face) {
+        return false;
+    }
+
+    @Override
+    public boolean intersectBox(@NotNull Point positionRelative, @NotNull BoundingBox boundingBox) {
+        return boundingBox.intersectBox(positionRelative, boundingBox);
+    }
+
+    @Override
+    public boolean intersectBoxSwept(@NotNull Point rayStart, @NotNull Point rayDirection, @NotNull Point shapePos, @NotNull BoundingBox moving, @NotNull SweepResult finalResult) {
+        return boundingBox.intersectBoxSwept(rayStart, rayDirection, shapePos, moving, finalResult);
+    }
+
+    @Override
+    public @NotNull Point relativeStart() {
+        return boundingBox.relativeStart();
+    }
+
+    @Override
+    public @NotNull Point relativeEnd() {
+        return boundingBox.relativeEnd();
+    }
+
+    public boolean hasCollision() {
+        return hasCollision;
     }
 
     public enum Pose {
