@@ -2,7 +2,6 @@ package net.minestom.server.entity;
 
 import dev.uten2c.rainstom.VariablesKt;
 import dev.uten2c.rainstom.damage.VanillaDamageType;
-import dev.uten2c.rainstom.network.packet.server.play.DamageEventPacket;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.Sound.Source;
 import net.minestom.server.MinecraftServer;
@@ -26,6 +25,7 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.network.ConnectionState;
 import net.minestom.server.network.packet.server.LazyPacket;
 import net.minestom.server.network.packet.server.play.CollectItemPacket;
+import net.minestom.server.network.packet.server.play.DamageEventPacket;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
 import net.minestom.server.network.packet.server.play.EntityPropertiesPacket;
 import net.minestom.server.network.player.PlayerConnection;
@@ -494,7 +494,7 @@ public class LivingEntity extends Entity implements EquipmentHandler {
             self = playerConnection != null && playerConnection.getConnectionState() == ConnectionState.PLAY;
         }
         // Rainstom start Minestomでは新規追加されたattributeしか送っていないので直す
-        final var list = new ArrayList<AttributeInstance>(attributeModifiers.values());
+        final var list = new ArrayList<>(attributeModifiers.values());
         list.add(attributeInstance);
         EntityPropertiesPacket propertiesPacket = new EntityPropertiesPacket(getEntityId(), list);
         // Rainstom end

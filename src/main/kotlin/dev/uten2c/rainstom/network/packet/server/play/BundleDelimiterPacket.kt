@@ -13,7 +13,7 @@ class BundleDelimiterPacket : ServerPacket {
     }
 
     override fun getId(): Int {
-        return ServerPacketIdentifier.BUNDLE_DELIMITER
+        return ServerPacketIdentifier.BUNDLE
     }
 
     override fun equals(other: Any?): Boolean {

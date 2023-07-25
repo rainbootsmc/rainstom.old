@@ -2,15 +2,11 @@ package net.minestom.server.network;
 
 import com.google.gson.JsonObject;
 import dev.uten2c.rainstom.network.packet.server.play.BundleDelimiterPacket;
-import dev.uten2c.rainstom.network.packet.server.play.ChunksBiomesPacket;
-import dev.uten2c.rainstom.network.packet.server.play.DamageEventPacket;
-import dev.uten2c.rainstom.network.packet.server.play.HurtAnimationPacket;
+import dev.uten2c.rainstom.network.packet.server.play.ChunkBiomesPacket;
 import dev.uten2c.rainstom.recipe.CraftingRecipeCategory;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.coordinate.Vec;
-import net.minestom.server.crypto.ChatSession;
-import net.minestom.server.crypto.PlayerPublicKey;
 import net.minestom.server.entity.EquipmentSlot;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Metadata;
@@ -27,18 +23,11 @@ import net.minestom.server.network.packet.server.login.SetCompressionPacket;
 import net.minestom.server.network.packet.server.play.*;
 import net.minestom.server.network.packet.server.play.DeclareRecipesPacket.Ingredient;
 import net.minestom.server.network.packet.server.status.PongPacket;
-import net.minestom.server.utils.crypto.KeyUtils;
-import org.apache.commons.net.util.Base64;
 import org.jglrxavpok.hephaistos.nbt.NBT;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -125,9 +114,9 @@ public class PacketWriteReadTest {
         SERVER_PACKETS.add(new EntityRotationPacket(5, 45f, 45f, false));
         // Rainstom start 1.19.4
         SERVER_PACKETS.add(new BundleDelimiterPacket());
-        SERVER_PACKETS.add(new ChunksBiomesPacket(Collections.emptyList()));
+        SERVER_PACKETS.add(new ChunkBiomesPacket(Collections.emptyList()));
         SERVER_PACKETS.add(new DamageEventPacket(5, 0, 0, 0, null));
-        SERVER_PACKETS.add(new HurtAnimationPacket(5, 0f));
+        SERVER_PACKETS.add(new HitAnimationPacket(5, 0f));
         // Rainstom end
 
         final PlayerSkin skin = new PlayerSkin("hh", "hh");

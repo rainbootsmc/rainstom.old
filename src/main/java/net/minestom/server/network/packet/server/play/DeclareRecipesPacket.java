@@ -115,6 +115,7 @@ public record DeclareRecipesPacket(@NotNull List<DeclaredRecipe> recipes) implem
             writer.write(VAR_INT, width);
             writer.write(VAR_INT, height);
             writer.write(STRING, group);
+            writer.write(VAR_INT, category.ordinal());
             for (Ingredient ingredient : ingredients) {
                 ingredient.write(writer);
             }

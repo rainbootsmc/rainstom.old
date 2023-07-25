@@ -5,7 +5,6 @@ import dev.uten2c.rainstom.inventory.InventoryListener;
 import dev.uten2c.rainstom.item.drop.DropAmount;
 import dev.uten2c.rainstom.item.drop.DropType;
 import dev.uten2c.rainstom.network.packet.server.play.BundleDelimiterPacket;
-import dev.uten2c.rainstom.network.packet.server.play.HurtAnimationPacket;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.bossbar.BossBar;
@@ -68,7 +67,6 @@ import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.network.player.PlayerSocketConnection;
 import net.minestom.server.recipe.Recipe;
 import net.minestom.server.recipe.RecipeManager;
-import net.minestom.server.registry.Registry;
 import net.minestom.server.resourcepack.ResourcePack;
 import net.minestom.server.scoreboard.BelowNameTag;
 import net.minestom.server.scoreboard.Team;
@@ -98,7 +96,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jglrxavpok.hephaistos.nbt.NBT;
-import org.jglrxavpok.hephaistos.nbt.NBTType;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -749,6 +746,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
         sendPluginMessage(channel, message.getBytes(StandardCharsets.UTF_8));
     }
 
+    @SuppressWarnings({"UnstableApiUsage", "deprecation"})
     @Override
     public void sendMessage(@NotNull Identity source, @NotNull Component message, @NotNull MessageType type) {
         Messenger.sendMessage(this, message, ChatPosition.fromMessageType(type), source.uuid());
@@ -2330,7 +2328,7 @@ public class Player extends LivingEntity implements CommandSender, Localizable, 
     // Rainstom start ダメージの向き関連
     @Override
     public void playHurtAnimation() {
-        sendPacket(new HurtAnimationPacket(getEntityId(), getHurtDir()));
+        sendPacket(new HitAnimationPacket(getEntityId(), getHurtDir()));
     }
     // Rainstom end
 }
