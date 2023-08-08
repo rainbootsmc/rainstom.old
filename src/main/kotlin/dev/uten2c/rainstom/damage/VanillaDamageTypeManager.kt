@@ -12,7 +12,7 @@ class VanillaDamageTypeManager {
 
     init {
         VanillaDamageTypes.VALUES.forEach(::addVanillaDamageType)
-        DamageEffects.values().forEach {
+        DamageEffects.entries.forEach {
             val damageType = VanillaDamageType.builder()
                 .name(NamespaceID.from(RAINSTOM, it.serializedName))
                 .build()
