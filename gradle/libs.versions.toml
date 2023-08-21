@@ -11,7 +11,7 @@ kotlinx-atomicfu = "0.21.0"
 kotlinx-serialization = "1.5.1"
 kotlinx-coroutines = "1.7.2"
 hydrazine = "1.7.2"
-hephaistos = "2.6.0"
+hephaistos = "2.6.1"
 jetbrainsAnnotations = "23.0.0"
 slf4j = "2.0.7"
 
