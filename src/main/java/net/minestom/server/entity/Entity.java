@@ -270,6 +270,13 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
 
     }
 
+    /**
+     * Called right before an entity is removed
+     */
+    protected void despawn() {
+
+    }
+
     public boolean isOnGround() {
         return onGround || EntityUtils.isOnGround(this) /* backup for levitating entities */;
     }
@@ -282,6 +289,21 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
      */
     public @NotNull EntityMeta getEntityMeta() {
         return this.entityMeta;
+    }
+
+    /**
+     * Do a batch edit of this entity's metadata.
+     */
+    public <TMeta extends EntityMeta> void editEntityMeta(Class<TMeta> metaClass, Consumer<TMeta> editor) {
+        entityMeta.setNotifyAboutChanges(false);
+        try {
+            TMeta casted = metaClass.cast(entityMeta);
+            editor.accept(casted);
+        } catch (Throwable t) {
+            throw new RuntimeException("Error editing entity " + id + " " + entityType.name() + " meta", t);
+        } finally {
+            entityMeta.setNotifyAboutChanges(true);
+        }
     }
 
     /**
@@ -1499,11 +1521,20 @@ public class Entity implements Viewable, Tickable, Schedulable, Snapshotable, Ev
      */
     public void remove() {
         if (isRemoved()) return;
+
+        EventDispatcher.call(new EntityDespawnEvent(this));
+        try {
+            despawn();
+        } catch (Throwable t) {
+            MinecraftServer.getExceptionManager().handleException(t);
+        }
+
         // Remove passengers if any (also done with LivingEntity#kill)
         Set<Entity> passengers = getPassengers();
         if (!passengers.isEmpty()) passengers.forEach(this::removePassenger);
         final Entity vehicle = this.vehicle;
         if (vehicle != null) vehicle.removePassenger(this);
+
         MinecraftServer.process().dispatcher().removeElement(this);
         this.removed = true;
         Entity.ENTITY_BY_ID.remove(id);
